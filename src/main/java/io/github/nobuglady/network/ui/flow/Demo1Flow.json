@@ -1,0 +1,67 @@
+{
+	"flowId": "your flow id",
+	"nodes": [
+		{
+			"id": "1",
+			"label": "start"
+		},
+		{
+			"id": "a1a38c2e-0e05-4c68-bd49-f12aea070876",
+			"label": "查询用户信息",
+			"readyCheck": 0
+		},
+		{
+			"id": "1a90a997-4390-470a-ae7c-626a725438d2",
+			"label": "查询酒店信息",
+			"readyCheck": 0
+		},
+		{
+			"id": "52289e99-363d-4453-8077-ca8bdc6d35bf",
+			"label": "下单",
+			"readyCheck": 0
+		},
+		{
+			"id": "16422cbb-ccb0-4fe2-952b-e3ad5c3acbb2",
+			"label": "下单成功",
+			"readyCheck": 0
+		}
+	],
+	"edges": [
+		{
+			"id": "1",
+			"from": "1",
+			"to": "2",
+			"arrows": "to"
+		},
+		{
+			"id": "b3ad7ab3-8fb6-4527-8cae-6845e03da3e4",
+			"from": "1",
+			"to": "a1a38c2e-0e05-4c68-bd49-f12aea070876",
+			"arrows": "to"
+		},
+		{
+			"id": "001375c7-19e7-436b-bbcd-68e36c8f23b7",
+			"from": "1",
+			"to": "1a90a997-4390-470a-ae7c-626a725438d2",
+			"arrows": "to"
+		},
+		{
+			"id": "dd830043-c7a7-4c71-b91c-10c007b7b19c",
+			"from": "1a90a997-4390-470a-ae7c-626a725438d2",
+			"to": "52289e99-363d-4453-8077-ca8bdc6d35bf",
+			"arrows": "to"
+		},
+		{
+			"id": "21c2c69d-0050-4eca-8283-5a2bcbdc6c37",
+			"from": "52289e99-363d-4453-8077-ca8bdc6d35bf",
+			"to": "16422cbb-ccb0-4fe2-952b-e3ad5c3acbb2",
+			"arrows": "to"
+		},
+		{
+			"id": "19f2f329-8163-4dc6-a353-800df79d18a6",
+			"from": "a1a38c2e-0e05-4c68-bd49-f12aea070876",
+			"to": "52289e99-363d-4453-8077-ca8bdc6d35bf",
+			"arrows": "to"
+		}
+	]
+}

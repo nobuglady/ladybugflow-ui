@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Demo</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<label>user name:</label>
+	<input id="username" name="username" type="text" value=""/>
+	<br/>
+	<button onClick="start()">[start]</button>
+	<button onClick="searchUser()">[查询用户信息]结束</button>
+	<button onClick="searchHotel()">[查询酒店信息]结束</button>
+	<button onClick="order()">[下单]结束</button>
+	<button onClick="success()">[下单成功]结束</button>
+	<div id="msg">
+	
+	</div>
+	<script type="text/javascript">
+		var historyId = null;
+		
+		function start(){
+			$("#msg").text("start....");
+			post("/start", {username:$("#username").val()}, function(data){
+				historyId = data;
+				$("#msg").text("start complete,historyId:"+data);
+			});
+		}
+		
+		function searchUser(){
+			$("#msg").text("searchUser....");
+			post("/searchUser", {historyId:historyId}, function(data){
+				$("#msg").text("searchUser complete");
+			});
+		}
+		
+		function searchHotel(){
+			$("#msg").text("searchHotel....");
+			post("/searchHotel", {historyId:historyId}, function(data){
+				$("#msg").text("searchHotel complete");
+			});
+		}
+		
+		function order(){
+			$("#msg").text("order....");
+			post("/order", {historyId:historyId}, function(data){
+				$("#msg").text("order complete");
+			});
+		}
+		
+		function success(){
+			$("#msg").text("success....");
+			post("/success", {historyId:historyId}, function(data){
+				$("#msg").text("success complete");
+			});
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+
+	</script>
+</body>
+</html>

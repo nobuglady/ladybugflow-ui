@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Instance List</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<style type="text/css">
+		.styled-table {
+		    border-collapse: collapse;
+		    margin: 25px 0;
+		    font-size: 0.9em;
+		    font-family: sans-serif;
+		    min-width: 400px;
+		    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+		}
+		
+		.styled-table thead tr {
+		    background-color: #009879;
+		    color: #ffffff;
+		    text-align: left;
+		}
+		
+		.styled-table th,
+		.styled-table td {
+		    padding: 12px 15px;
+		}
+		
+		.styled-table tbody tr {
+		    border-bottom: 1px solid #dddddd;
+		}
+		
+		.styled-table tbody tr:nth-of-type(even) {
+		    background-color: #f3f3f3;
+		}
+		
+		.styled-table tbody tr:last-of-type {
+		    border-bottom: 2px solid #009879;
+		}
+		
+		.styled-table tbody tr.active-row {
+		    font-weight: bold;
+		    color: #009879;
+		}
+	</style>
+</head>
+<body>
+	
+	<button onClick="refresh()">Refresh</button>
+	<button onClick="clearComplete()">Clear Complete</button>
+	<button onClick="clearError()">Clear Error</button>
+	
+	<table class="styled-table">
+		<thead>
+			<tr>
+				<td>Flow</td>
+				<td>Parameter</td>
+				<td>Instance</td>
+				<td>Status</td>
+				<td>Detail</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="entity:${entityList}">
+				<td th:text="${entity.flowId}">aaa</td>
+				<td th:text="${entity.startParam}">bbb</td>
+				<td th:text="${entity.historyId}">123</td>
+				<td th:text="${FlowStatus.getFlowStatusString(entity.flowStatus)}">1</td>
+				<td><a th:href="@{network(flowId=${entity.flowId},historyId=${entity.historyId})}">Detail</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<script type="text/javascript">
+		function refresh(){
+			window.location.reload();
+		}
+		
+		function clearComplete(){
+			post("/clearComplete", null, function(){
+				refresh();
+			});
+		}
+		
+		function clearError(){
+			post("/clearError", null, function(){
+				refresh();
+			});
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+
+	</script>
+</body>
+</html>
