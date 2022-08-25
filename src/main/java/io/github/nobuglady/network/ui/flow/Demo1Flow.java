@@ -39,7 +39,7 @@ public class Demo1Flow extends FlowRunner {
 	@Node(label = "下单成功")
 	public void processSuccess() throws InterruptedException {
 		System.out.println("下单成功开始 （模拟业务等待3秒）");
-		Thread.sleep(10000);
+		Thread.sleep(3000);
 		System.out.println("下单成功结束");
 
 	}
