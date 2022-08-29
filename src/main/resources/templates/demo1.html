@@ -7,17 +7,17 @@
 </head>
 <body>
 
-	<label>用户名:</label>
+	<label>user name:</label>
 	<input id="username" name="username" type="text" value=""/>
-	<button onClick="go()">预定</button>
+	<button onClick="go()">book</button>
 	<div id="msg">
 	
 	</div>
 	<script type="text/javascript">
 		function go(){
-			$("#msg").text("预定中....");
+			$("#msg").text("booking....");
 			post("/bookingHotel", {username:$("#username").val()}, function(data){
-				$("#msg").text("预定成功");
+				$("#msg").text("book success");
 			});
 		}
 		

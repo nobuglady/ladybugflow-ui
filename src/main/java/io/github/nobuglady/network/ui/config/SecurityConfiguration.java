@@ -10,28 +10,25 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package io.github.nobuglady.network.ui.service;
+package io.github.nobuglady.network.ui.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import io.github.nobuglady.network.ui.flow.Demo1Flow;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * 
  * @author NoBugLady
  *
  */
-@Service
-public class Demo1Service {
+@Configuration
+public class SecurityConfiguration {
 
-	@Autowired
-	private Demo1Flow demo1Flow;
-
-	/**
-	 * Start flow
-	 */
-	public void bookingHotel(String username) {
-		demo1Flow.startFlow(true, username);
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable();
+		return http.build();
 	}
+
 }

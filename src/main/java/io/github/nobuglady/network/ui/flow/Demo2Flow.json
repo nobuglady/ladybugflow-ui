@@ -7,7 +7,7 @@
 		},
 		{
 			"id": "a1a38c2e-0e05-4c68-bd49-f12aea070876",
-			"label": "查询用户信息",
+			"label": "search user",
 			"readyCheck": 0,
 			"startType": 0,
 			"executeType": 2,
@@ -15,7 +15,7 @@
 		},
 		{
 			"id": "1a90a997-4390-470a-ae7c-626a725438d2",
-			"label": "查询酒店信息",
+			"label": "search hotel",
 			"readyCheck": 0,
 			"startType": 0,
 			"executeType": 2,
@@ -23,7 +23,7 @@
 		},
 		{
 			"id": "52289e99-363d-4453-8077-ca8bdc6d35bf",
-			"label": "下单",
+			"label": "order",
 			"readyCheck": 0,
 			"startType": 0,
 			"executeType": 2,
@@ -31,7 +31,7 @@
 		},
 		{
 			"id": "16422cbb-ccb0-4fe2-952b-e3ad5c3acbb2",
-			"label": "下单成功",
+			"label": "order success",
 			"readyCheck": 0,
 			"startType": 0,
 			"executeType": 2,
