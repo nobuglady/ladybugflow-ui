@@ -10,7 +10,7 @@
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
  */
-package io.github.nobuglady.network.ui.controller;
+package io.github.nobuglady.network.ui.controller.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,13 +32,13 @@ public class Demo1Controller {
 	@Autowired
 	private Demo1Service demo1Service;
 
-	@RequestMapping(value = "/demo1", method = RequestMethod.GET)
+	@RequestMapping(value = "/demo/demo1", method = RequestMethod.GET)
 	public String demo() {
 
-		return "demo1";
+		return "/demo/demo1";
 	}
 
-	@RequestMapping(value = "/bookingHotel", method = RequestMethod.POST)
+	@RequestMapping(value = "/demo/demo1/bookingHotel", method = RequestMethod.POST)
 	@ResponseBody
 	public String bookingHotel(@RequestParam(value = "username") String username) {
 

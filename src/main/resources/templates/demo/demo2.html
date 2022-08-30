@@ -23,7 +23,7 @@
 		
 		function start(){
 			$("#msg").text("start....");
-			post("/start", {username:$("#username").val()}, function(data){
+			post("/demo/demo2/start", {username:$("#username").val()}, function(data){
 				historyId = data;
 				$("#msg").text("start complete,historyId:"+data);
 			});
@@ -31,28 +31,28 @@
 		
 		function searchUser(){
 			$("#msg").text("searchUser....");
-			post("/searchUser", {historyId:historyId}, function(data){
+			post("/demo/demo2/searchUser", {historyId:historyId}, function(data){
 				$("#msg").text("searchUser complete");
 			});
 		}
 		
 		function searchHotel(){
 			$("#msg").text("searchHotel....");
-			post("/searchHotel", {historyId:historyId}, function(data){
+			post("/demo/demo2/searchHotel", {historyId:historyId}, function(data){
 				$("#msg").text("searchHotel complete");
 			});
 		}
 		
 		function order(){
 			$("#msg").text("order....");
-			post("/order", {historyId:historyId}, function(data){
+			post("/demo/demo2/order", {historyId:historyId}, function(data){
 				$("#msg").text("order complete");
 			});
 		}
 		
 		function success(){
 			$("#msg").text("success....");
-			post("/success", {historyId:historyId}, function(data){
+			post("/demo/demo2/success", {historyId:historyId}, function(data){
 				$("#msg").text("success complete");
 			});
 		}

@@ -28,6 +28,11 @@ public class SecurityConfiguration {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf().disable();
+		http.authorizeHttpRequests(authz -> authz.anyRequest().authenticated());
+
+		http.formLogin(login -> login.loginProcessingUrl("/login").loginPage("/login").permitAll()
+				.defaultSuccessUrl("/home").failureUrl("/login?error"))
+				.logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll());
 		return http.build();
 	}
 

@@ -38,7 +38,7 @@ public class FlowController {
 	@Autowired
 	private FlowService flowService;
 
-	@GetMapping("/list")
+	@GetMapping("/home")
 	public String instanceList(Model model) {
 
 		List<HistoryFlowEntity> flowEntityList = flowService.getAllFlowHistory();
@@ -46,15 +46,15 @@ public class FlowController {
 		model.addAttribute("entityList", flowEntityList);
 		model.addAttribute("FlowStatus", new FlowStatus());
 
-		return "instance_list";
+		return "/home";
 	}
 
 	@GetMapping("/network")
 	public String network(Model model) {
-		return "network";
+		return "/network";
 	}
 
-	@GetMapping("/getJson")
+	@GetMapping("/flow/getJson")
 	@ResponseBody
 	public String getJson(@RequestParam String flowId, @RequestParam String historyId) {
 
@@ -62,7 +62,7 @@ public class FlowController {
 
 	}
 
-	@RequestMapping(value = "/clearComplete", method = RequestMethod.POST)
+	@RequestMapping(value = "/flow/clearComplete", method = RequestMethod.POST)
 	@ResponseBody
 	public String clearComplete() {
 
@@ -71,7 +71,7 @@ public class FlowController {
 
 	}
 
-	@RequestMapping(value = "/clearError", method = RequestMethod.POST)
+	@RequestMapping(value = "/flow/clearError", method = RequestMethod.POST)
 	@ResponseBody
 	public String clearError() {
 

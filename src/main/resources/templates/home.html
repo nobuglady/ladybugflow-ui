@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8">
+	<title>home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<style type="text/css">
+		.styled-table {
+		    border-collapse: collapse;
+		    margin: 25px 0;
+		    font-size: 0.9em;
+		    font-family: sans-serif;
+		    min-width: 400px;
+		    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+		}
+		
+		.styled-table thead tr {
+		    background-color: #009879;
+		    color: #ffffff;
+		    text-align: left;
+		}
+		
+		.styled-table th,
+		.styled-table td {
+		    padding: 12px 15px;
+		}
+		
+		.styled-table tbody tr {
+		    border-bottom: 1px solid #dddddd;
+		}
+		
+		.styled-table tbody tr:nth-of-type(even) {
+		    background-color: #f3f3f3;
+		}
+		
+		.styled-table tbody tr:last-of-type {
+		    border-bottom: 2px solid #009879;
+		}
+		
+		.styled-table tbody tr.active-row {
+		    font-weight: bold;
+		    color: #009879;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  <a class="navbar-brand" href="/home">
+	  <img src="images/ladybug.png" width="30" height="30" class="d-inline-block align-top" alt="">
+	  Home
+	  </a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+	
+	      <ul class="navbar-nav mr-auto">
+	      	<!-- 
+	        <li class="nav-item">
+	          <a class="nav-link" href="#">Home</a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" href="#">About</a>
+	        </li>
+	         -->
+	      </ul>
+	
+	      <ul class="navbar-nav">
+	      	<li class="nav-item">
+	          <a class="nav-link" href="#"><span sec:authentication="name">Bob</span></a>
+	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" href="/logout">logout</a>
+	        </li>
+	      </ul>
+	
+	    </div>
+	</nav>
+	<div class="container">
+		<button onClick="refresh()">Refresh</button>
+		<button onClick="clearComplete()">Clear Complete</button>
+		<button onClick="clearError()">Clear Error</button>
+		
+		<table class="styled-table">
+			<thead>
+				<tr>
+					<td>Flow</td>
+					<td>Parameter</td>
+					<td>Instance</td>
+					<td>Status</td>
+					<td>Detail</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="entity:${entityList}">
+					<td th:text="${entity.flowId}">aaa</td>
+					<td th:text="${entity.startParam}">bbb</td>
+					<td th:text="${entity.historyId}">123</td>
+					<td th:text="${FlowStatus.getFlowStatusString(entity.flowStatus)}">1</td>
+					<td><a th:href="@{/network(flowId=${entity.flowId},historyId=${entity.historyId})}">Detail</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<script type="text/javascript">
+		function refresh(){
+			window.location.reload();
+		}
+		
+		function clearComplete(){
+			post("/flow/clearComplete", null, function(){
+				refresh();
+			});
+		}
+		
+		function clearError(){
+			post("/flow/clearError", null, function(){
+				refresh();
+			});
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+
+	</script>
+</body>
+</html>

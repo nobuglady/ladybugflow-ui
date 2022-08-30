@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ログイン</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="container">
+   <p style="text-align: center;"></p>
+   <form class="form-signin" th:action="@{/login}" method="post">
+        <div th:if="${showErrorMsg}" class="alert alert-danger" role="alert" th:text="${errorMsg}">
+        </div>
+        <div th:if="${showLogoutedMsg}" class="alert alert-success" role="alert">logout success!</div>
+
+        <p>
+          <input type="text" id="username" name="username" class="form-control" placeholder="username" required autofocus>
+        </p>
+        <p>
+          <input type="password" id="password" name="password" class="form-control" placeholder="password" required>
+        </p>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">login</button>
+   </form>
+</div>
+</body>
+</html>

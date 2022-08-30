@@ -16,7 +16,7 @@
 	<script type="text/javascript">
 		function go(){
 			$("#msg").text("booking....");
-			post("/bookingHotel", {username:$("#username").val()}, function(data){
+			post("/demo/demo1/bookingHotel", {username:$("#username").val()}, function(data){
 				$("#msg").text("book success");
 			});
 		}
