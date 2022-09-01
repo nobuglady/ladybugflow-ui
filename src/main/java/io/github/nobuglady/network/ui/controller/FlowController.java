@@ -88,6 +88,11 @@ public class FlowController {
 		return "/network_flow";
 	}
 
+	@GetMapping("/create_flow")
+	public String createFlow(Model model) {
+		return "/network";
+	}
+
 	@GetMapping("/flow/getJsonHistory")
 	@ResponseBody
 	public String getJsonHistory(@RequestParam String flowId, @RequestParam String historyId) {

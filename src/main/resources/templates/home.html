@@ -36,6 +36,15 @@
 		<div class="collapse navbar-collapse" id="navbarNavDropdown">
 
 			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+		          <a class="nav-link" href="/create_flow" target="_blank">Create Flow</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/demo/demo1" target="_blank">demo1</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="demo/demo2" target="_blank">demo2</a>
+		        </li>
 			</ul>
 
 			<ul class="navbar-nav">
@@ -132,7 +141,7 @@
 							<td th:text="${entity.completeCount}">1</td>
 							<td th:text="${entity.processingCount}">1</td>
 							<td th:text="${entity.errorCount}">1</td>
-							<td><a th:href="@{/network_flow(flowId=${entity.flowId})}">Detail</a></td>
+							<td><a th:href="@{/network_flow(flowId=${entity.flowId})}" target="_blank">Detail</a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -165,7 +174,7 @@
 							<td th:text="${entity.finishTimeVo}">2022/08/31 10:00</td>
 							<td th:text="${entity.spendTimeVo}">01:00</td>
 							<td><a
-								th:href="@{/network_history(flowId=${entity.flowId},historyId=${entity.historyId})}">Detail</a></td>
+								th:href="@{/network_history(flowId=${entity.flowId},historyId=${entity.historyId})}" target="_blank">Detail</a></td>
 						</tr>
 					</tbody>
 				</table>
