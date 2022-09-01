@@ -67,6 +67,16 @@ public class FlowAccessor implements IFlowAccessor {
 	}
 
 	/**
+	 * selectFlowHistoryLast
+	 * 
+	 * @param flowId flowId
+	 * @return last flowHistoryId
+	 */
+	public String selectFlowHistoryLast(String flowId) {
+		return historyFlowDao.selectFlowHistoryLast(flowId);
+	}
+
+	/**
 	 * selectNodeByFlowHistoryId
 	 * 
 	 * @param flowId    flowId
@@ -75,6 +85,16 @@ public class FlowAccessor implements IFlowAccessor {
 	 */
 	public List<HistoryNodeEntity> selectNodeByFlowHistoryId(String flowId, String historyId) {
 		return historyNodeDao.selectByFlowHistoryId(flowId, historyId);
+	}
+
+	/**
+	 * selectNodeByFlowId
+	 * 
+	 * @param flowId    flowId
+	 * @return HistoryNodeEntity
+	 */
+	public List<HistoryNodeEntity> selectNodeByFlowId(String flowId) {
+		return historyNodeDao.selectByFlowId(flowId);
 	}
 
 	/**
@@ -139,14 +159,25 @@ public class FlowAccessor implements IFlowAccessor {
 	}
 
 	/**
-	 * updateFlowStatus
+	 * updateFlowStatusAndFinishTime
 	 * 
 	 * @param flowId     flowId
 	 * @param historyId  historyId
 	 * @param flowStatus flowStatus
 	 */
-	public void updateFlowStatus(String flowId, String historyId, int flowStatus) {
-		historyFlowDao.updateFlowStatus(flowId, historyId, flowStatus);
+	public void updateFlowStatusAndFinishTime(String flowId, String historyId, int flowStatus) {
+		historyFlowDao.updateStatusAndFinishTime(flowId, historyId, flowStatus);
+	}
+
+	/**
+	 * updateFlowStatusAndStartTime
+	 * 
+	 * @param flowId     flowId
+	 * @param historyId  historyId
+	 * @param flowStatus flowStatus
+	 */
+	public void updateFlowStatusAndStartTime(String flowId, String historyId, int flowStatus) {
+		historyFlowDao.updateStatusAndStartTime(flowId, historyId, flowStatus);
 	}
 
 	/**

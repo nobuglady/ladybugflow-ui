@@ -12,14 +12,19 @@
  */
 package io.github.nobuglady.network.ui.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import io.github.nobuglady.network.fw.component.FlowComponentFactory;
 import io.github.nobuglady.network.fw.component.IFlowAccessor;
+import io.github.nobuglady.network.fw.constant.FlowStatus;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
 import io.github.nobuglady.network.fw.util.FlowUtil;
+import io.github.nobuglady.network.ui.controller.dto.FlowEntityVo;
 
 /**
  * 
@@ -38,6 +43,40 @@ public class FlowService {
 	public List<HistoryFlowEntity> getAllFlowHistory() {
 		return flowAccessor.selectAll();
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<FlowEntityVo> getAllFlow() {
+		
+		List<FlowEntityVo> flowEntityList = new ArrayList<>();
+		
+		Map<String,FlowEntityVo> flowMap = new HashMap<>();
+		List<HistoryFlowEntity> historyList = flowAccessor.selectAll();
+		for(HistoryFlowEntity historyEntity:historyList) {
+			FlowEntityVo flowEntityVo = flowMap.get(historyEntity.getFlowId());
+			if(flowEntityVo == null) {
+				flowEntityVo = new FlowEntityVo();
+				flowEntityVo.setFlowId(historyEntity.getFlowId());
+				flowMap.put(historyEntity.getFlowId(), flowEntityVo);
+				flowEntityList.add(flowEntityVo);
+			}
+			
+			flowEntityVo.setHistoryCount(flowEntityVo.getHistoryCount() + 1);
+			
+			if(FlowStatus.PROCESSING == historyEntity.getFlowStatus() || FlowStatus.READY == historyEntity.getFlowStatus()) {
+				flowEntityVo.setProcessingCount(flowEntityVo.getProcessingCount() + 1);
+			}else if(FlowStatus.COMPLETE == historyEntity.getFlowStatus()) {
+				flowEntityVo.setCompleteCount(flowEntityVo.getCompleteCount() + 1);
+			}else if(FlowStatus.ERROR == historyEntity.getFlowStatus() || FlowStatus.CANCEL == historyEntity.getFlowStatus()) {
+				flowEntityVo.setErrorCount(flowEntityVo.getErrorCount() + 1);
+			}
+		}
+		
+		return flowEntityList;
+	}
+
 
 	/**
 	 * 
@@ -45,8 +84,17 @@ public class FlowService {
 	 * @param historyId
 	 * @return
 	 */
-	public String getJson(String flowId, String historyId) {
+	public String getJsonHistory(String flowId, String historyId) {
 		return FlowUtil.dumpJson(flowId, historyId);
+	}
+	
+	/**
+	 * 
+	 * @param flowId
+	 * @return
+	 */
+	public String getJsonFlow(String flowId) {
+		return FlowUtil.dumpJsonFlow(flowId);
 	}
 
 	public void clearComplete() {

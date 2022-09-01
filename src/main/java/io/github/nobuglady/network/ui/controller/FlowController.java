@@ -25,7 +25,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.github.nobuglady.network.fw.constant.FlowStatus;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
+import io.github.nobuglady.network.ui.controller.dto.FlowEntityVo;
+import io.github.nobuglady.network.ui.controller.dto.HistoryFlowEntityVo;
 import io.github.nobuglady.network.ui.service.FlowService;
+import io.github.nobuglady.network.ui.util.BeanUtil;
 
 /**
  * 
@@ -38,27 +41,66 @@ public class FlowController {
 	@Autowired
 	private FlowService flowService;
 
+	@GetMapping("/")
+	public String home(Model model) {
+		return instanceList(model);
+	}
+	
 	@GetMapping("/home")
 	public String instanceList(Model model) {
 
-		List<HistoryFlowEntity> flowEntityList = flowService.getAllFlowHistory();
-
-		model.addAttribute("entityList", flowEntityList);
+		List<HistoryFlowEntity> instanceList = flowService.getAllFlowHistory();
+		List<FlowEntityVo> flowList = flowService.getAllFlow();
+		
+		int flowCount = flowList.size();
+		int instanceCount = 0;
+		int completeCount = 0;
+		int processingCount = 0;
+		int errorCount = 0;
+		
+		for(FlowEntityVo flowEntity:flowList) {
+			instanceCount += flowEntity.getHistoryCount();
+			completeCount += flowEntity.getCompleteCount();
+			processingCount += flowEntity.getProcessingCount();
+			errorCount += flowEntity.getErrorCount();
+		}
+		
+		model.addAttribute("flowCount", flowCount);
+		model.addAttribute("instanceCount", instanceCount);
+		model.addAttribute("completeCount", completeCount);
+		model.addAttribute("processingCount", processingCount);
+		model.addAttribute("errorCount", errorCount);
+		
+		model.addAttribute("instanceList", BeanUtil.copyList(instanceList, HistoryFlowEntityVo.class));
+		model.addAttribute("flowList", flowList);
 		model.addAttribute("FlowStatus", new FlowStatus());
 
 		return "/home";
 	}
 
-	@GetMapping("/network")
-	public String network(Model model) {
-		return "/network";
+	@GetMapping("/network_history")
+	public String networkHistory(Model model) {
+		return "/network_history";
+	}
+	
+	@GetMapping("/network_flow")
+	public String networkFlow(Model model) {
+		return "/network_flow";
 	}
 
-	@GetMapping("/flow/getJson")
+	@GetMapping("/flow/getJsonHistory")
 	@ResponseBody
-	public String getJson(@RequestParam String flowId, @RequestParam String historyId) {
+	public String getJsonHistory(@RequestParam String flowId, @RequestParam String historyId) {
 
-		return flowService.getJson(flowId, historyId);
+		return flowService.getJsonHistory(flowId, historyId);
+
+	}
+	
+	@GetMapping("/flow/getJsonFlow")
+	@ResponseBody
+	public String getJsonFlow(@RequestParam String flowId) {
+
+		return flowService.getJsonFlow(flowId);
 
 	}
 

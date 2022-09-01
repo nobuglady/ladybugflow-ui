@@ -116,6 +116,13 @@ public interface HistoryNodeMapper {
 			+ " and history_id = #{param2}")
 	// @formatter:on
 	public List<HistoryNodeEntity> selectByFlowHistoryId(String flowId, String historyId);
+	
+	// @formatter:off
+	@Select("SELECT * FROM history_node " 
+			+ " WHERE" 
+			+ " flow_id = #{param1}")
+	// @formatter:on
+	public List<HistoryNodeEntity> selectByFlowId(String flowId);
 
 	// @formatter:off
 	@Select("SELECT * FROM history_node " 

@@ -72,15 +72,43 @@ public class HistoryFlowDao {
 	}
 
 	/**
-	 * updateFlowStatus
+	 * selectFlowHistoryLast
+	 * 
+	 * @param flowId flowId
+	 * @return last flowHistoryId
+	 */
+	public String selectFlowHistoryLast(String flowId) {
+		HistoryFlowEntity entity = historyFlowMapper.selectFlowHistoryLast(flowId);
+		
+		if(entity == null) {
+			return null;
+		}else {
+			return entity.getHistoryId();
+		}
+	}
+
+	/**
+	 * updateStatusAndFinishTime
 	 * 
 	 * @param flowId    flowId
 	 * @param historyId historyId
 	 * @param status    status
 	 */
-	public void updateFlowStatus(String flowId, String historyId, int status) {
+	public void updateStatusAndFinishTime(String flowId, String historyId, int status) {
 
-		historyFlowMapper.updateStatus(flowId, historyId, status, "testUser");
+		historyFlowMapper.updateStatusAndFinishTime(flowId, historyId, status, "testUser");
+	}
+
+	/**
+	 * updateStatusAndStartTime
+	 * 
+	 * @param flowId    flowId
+	 * @param historyId historyId
+	 * @param status    status
+	 */
+	public void updateStatusAndStartTime(String flowId, String historyId, int status) {
+
+		historyFlowMapper.updateStatusAndStartTime(flowId, historyId, status, "testUser");
 	}
 
 	/**

@@ -98,6 +98,11 @@ public interface HistoryFlowMapper {
 	@Select("SELECT * FROM history_flow ")
 	// @formatter:on
 	public List<HistoryFlowEntity> selectAll();
+	
+	// @formatter:off
+	@Select("SELECT * FROM history_flow where flow_id = #{param1} order by create_time desc LIMIT 1 ")
+	// @formatter:on
+	public HistoryFlowEntity selectFlowHistoryLast(String flowId);
 
 	// @formatter:off
 	@Update("update history_flow" 
@@ -109,7 +114,19 @@ public interface HistoryFlowMapper {
 			+ " flow_id=#{param1} " 
 			+ " and history_id = #{param2} ")
 	// @formatter:on
-	public void updateStatus(String flowId, String historyId, int status, String userId);
+	public void updateStatusAndFinishTime(String flowId, String historyId, int status, String userId);
+
+	// @formatter:off
+	@Update("update history_flow" 
+			+ " set start_time=now()," 
+			+ " flow_status=#{param3}, " 
+			+ " update_user=#{param4}, "
+			+ " update_time=now() " 
+			+ " where" 
+			+ " flow_id=#{param1} " 
+			+ " and history_id = #{param2} ")
+	// @formatter:on
+	public void updateStatusAndStartTime(String flowId, String historyId, int status, String userId);
 
 	// @formatter:off
 	@Delete("DELETE FROM history_flow " 

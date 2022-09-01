@@ -40,7 +40,7 @@
 		var flowId = getUrlParameter("flowId");
 		var historyId = getUrlParameter("historyId");
 		
-		get("/flow/getJson?flowId="+flowId+"&historyId="+historyId,null,function (data){
+		get("/flow/getJsonHistory?flowId="+flowId+"&historyId="+historyId,null,function (data){
 			showNetwork(data);
 		});
 	}

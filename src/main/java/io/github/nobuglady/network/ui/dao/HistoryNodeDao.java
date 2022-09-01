@@ -74,6 +74,17 @@ public class HistoryNodeDao {
 
 		return nodeHistoryMapper.selectByFlowHistoryId(flowId, historyId);
 	}
+	
+	/**
+	 * selectByFlowId
+	 * 
+	 * @param flowId    flowId
+	 * @return HistoryNodeEntity
+	 */
+	public List<HistoryNodeEntity> selectByFlowId(String flowId) {
+
+		return nodeHistoryMapper.selectByFlowId(flowId);
+	}
 
 	/**
 	 * selectNodeListByStatus
