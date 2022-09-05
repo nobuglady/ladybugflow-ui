@@ -4,9 +4,9 @@
 ![](https://img.shields.io/badge/Java-1.8-orange)
 ![](https://img.shields.io/badge/SpringBoot-2.7.2-green)
 
-LadybugFlow-UI is a job flow framework for java, <br />
-It can run a jobflow design by json in java.<br />
-Also we support a UI tool to draw a flow and convert to json file.
+Ladybug-Flow is a light workflow engine described by json and run in java enviroment,<br />
+Ladybug-Flow has an UI tool to draw a flow by drag and drop and generate to json config file.<br />
+Ladybug-Flow-UI can watch all workflow status in a UI view.
 
 ### 1. Setup
 
