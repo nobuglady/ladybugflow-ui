@@ -25,6 +25,7 @@ import io.github.nobuglady.network.fw.constant.FlowStatus;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
 import io.github.nobuglady.network.fw.util.FlowUtil;
 import io.github.nobuglady.network.ui.controller.dto.FlowEntityVo;
+import io.github.nobuglady.network.ui.dao.FlowAccessorUI;
 
 /**
  * 
@@ -34,49 +35,52 @@ import io.github.nobuglady.network.ui.controller.dto.FlowEntityVo;
 @Service
 public class FlowService {
 
+	@SuppressWarnings("unused")
 	private IFlowAccessor flowAccessor = FlowComponentFactory.getFlowAccessor();
+	private FlowAccessorUI flowAccessorUI = new FlowAccessorUI();
 
 	/**
 	 * 
 	 * @return
 	 */
 	public List<HistoryFlowEntity> getAllFlowHistory() {
-		return flowAccessor.selectAll();
+		return flowAccessorUI.selectAll();
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
 	public List<FlowEntityVo> getAllFlow() {
-		
+
 		List<FlowEntityVo> flowEntityList = new ArrayList<>();
-		
-		Map<String,FlowEntityVo> flowMap = new HashMap<>();
-		List<HistoryFlowEntity> historyList = flowAccessor.selectAll();
-		for(HistoryFlowEntity historyEntity:historyList) {
+
+		Map<String, FlowEntityVo> flowMap = new HashMap<>();
+		List<HistoryFlowEntity> historyList = flowAccessorUI.selectAll();
+		for (HistoryFlowEntity historyEntity : historyList) {
 			FlowEntityVo flowEntityVo = flowMap.get(historyEntity.getFlowId());
-			if(flowEntityVo == null) {
+			if (flowEntityVo == null) {
 				flowEntityVo = new FlowEntityVo();
 				flowEntityVo.setFlowId(historyEntity.getFlowId());
 				flowMap.put(historyEntity.getFlowId(), flowEntityVo);
 				flowEntityList.add(flowEntityVo);
 			}
-			
+
 			flowEntityVo.setHistoryCount(flowEntityVo.getHistoryCount() + 1);
-			
-			if(FlowStatus.PROCESSING == historyEntity.getFlowStatus() || FlowStatus.READY == historyEntity.getFlowStatus()) {
+
+			if (FlowStatus.PROCESSING == historyEntity.getFlowStatus()
+					|| FlowStatus.READY == historyEntity.getFlowStatus()) {
 				flowEntityVo.setProcessingCount(flowEntityVo.getProcessingCount() + 1);
-			}else if(FlowStatus.COMPLETE == historyEntity.getFlowStatus()) {
+			} else if (FlowStatus.COMPLETE == historyEntity.getFlowStatus()) {
 				flowEntityVo.setCompleteCount(flowEntityVo.getCompleteCount() + 1);
-			}else if(FlowStatus.ERROR == historyEntity.getFlowStatus() || FlowStatus.CANCEL == historyEntity.getFlowStatus()) {
+			} else if (FlowStatus.ERROR == historyEntity.getFlowStatus()
+					|| FlowStatus.CANCEL == historyEntity.getFlowStatus()) {
 				flowEntityVo.setErrorCount(flowEntityVo.getErrorCount() + 1);
 			}
 		}
-		
+
 		return flowEntityList;
 	}
-
 
 	/**
 	 * 
@@ -87,7 +91,7 @@ public class FlowService {
 	public String getJsonHistory(String flowId, String historyId) {
 		return FlowUtil.dumpJson(flowId, historyId);
 	}
-	
+
 	/**
 	 * 
 	 * @param flowId
@@ -97,13 +101,19 @@ public class FlowService {
 		return FlowUtil.dumpJsonFlow(flowId);
 	}
 
+	/**
+	 * 
+	 */
 	public void clearComplete() {
 
-		flowAccessor.removeAllComplete();
+		flowAccessorUI.removeAllComplete();
 	}
 
+	/**
+	 * 
+	 */
 	public void clearError() {
 
-		flowAccessor.removeAllError();
+		flowAccessorUI.removeAllError();
 	}
 }

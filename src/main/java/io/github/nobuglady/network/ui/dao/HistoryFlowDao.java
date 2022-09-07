@@ -79,10 +79,10 @@ public class HistoryFlowDao {
 	 */
 	public String selectFlowHistoryLast(String flowId) {
 		HistoryFlowEntity entity = historyFlowMapper.selectFlowHistoryLast(flowId);
-		
-		if(entity == null) {
+
+		if (entity == null) {
 			return null;
-		}else {
+		} else {
 			return entity.getHistoryId();
 		}
 	}

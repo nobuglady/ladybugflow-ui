@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.github.nobuglady.network.fw.component.IFlowAccessor;
-import io.github.nobuglady.network.fw.constant.FlowStatus;
 import io.github.nobuglady.network.fw.persistance.entity.FlowEntity;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryEdgeEntity;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
@@ -90,7 +89,7 @@ public class FlowAccessor implements IFlowAccessor {
 	/**
 	 * selectNodeByFlowId
 	 * 
-	 * @param flowId    flowId
+	 * @param flowId flowId
 	 * @return HistoryNodeEntity
 	 */
 	public List<HistoryNodeEntity> selectNodeByFlowId(String flowId) {
@@ -248,36 +247,6 @@ public class FlowAccessor implements IFlowAccessor {
 		historyFlowDao.deleteAllByKey(flowId, historyId);
 		historyNodeDao.deleteByFlowHistoryId(flowId, historyId);
 		historyEdgeDao.deleteByFlowHistoryId(flowId, historyId);
-	}
-
-	/**
-	 * removeAllComplete
-	 * 
-	 */
-	public void removeAllComplete() {
-
-		historyNodeDao.deleteByFlowStatus(FlowStatus.COMPLETE);
-		historyEdgeDao.deleteByFlowStatus(FlowStatus.COMPLETE);
-		historyFlowDao.deleteAllByStatus(FlowStatus.COMPLETE);
-	}
-
-	/**
-	 * removeAllError
-	 */
-	public void removeAllError() {
-
-		historyNodeDao.deleteByFlowStatus(FlowStatus.ERROR);
-		historyEdgeDao.deleteByFlowStatus(FlowStatus.ERROR);
-		historyFlowDao.deleteAllByStatus(FlowStatus.ERROR);
-	}
-
-	/**
-	 * selectAll
-	 * 
-	 * @return HistoryFlowEntity
-	 */
-	public List<HistoryFlowEntity> selectAll() {
-		return historyFlowDao.selectAll();
 	}
 
 }

@@ -98,7 +98,7 @@ public interface HistoryFlowMapper {
 	@Select("SELECT * FROM history_flow ")
 	// @formatter:on
 	public List<HistoryFlowEntity> selectAll();
-	
+
 	// @formatter:off
 	@Select("SELECT * FROM history_flow where flow_id = #{param1} order by create_time desc LIMIT 1 ")
 	// @formatter:on

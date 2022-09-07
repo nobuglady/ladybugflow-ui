@@ -45,32 +45,32 @@ public class FlowController {
 	public String home(Model model) {
 		return instanceList(model);
 	}
-	
+
 	@GetMapping("/home")
 	public String instanceList(Model model) {
 
 		List<HistoryFlowEntity> instanceList = flowService.getAllFlowHistory();
 		List<FlowEntityVo> flowList = flowService.getAllFlow();
-		
+
 		int flowCount = flowList.size();
 		int instanceCount = 0;
 		int completeCount = 0;
 		int processingCount = 0;
 		int errorCount = 0;
-		
-		for(FlowEntityVo flowEntity:flowList) {
+
+		for (FlowEntityVo flowEntity : flowList) {
 			instanceCount += flowEntity.getHistoryCount();
 			completeCount += flowEntity.getCompleteCount();
 			processingCount += flowEntity.getProcessingCount();
 			errorCount += flowEntity.getErrorCount();
 		}
-		
+
 		model.addAttribute("flowCount", flowCount);
 		model.addAttribute("instanceCount", instanceCount);
 		model.addAttribute("completeCount", completeCount);
 		model.addAttribute("processingCount", processingCount);
 		model.addAttribute("errorCount", errorCount);
-		
+
 		model.addAttribute("instanceList", BeanUtil.copyList(instanceList, HistoryFlowEntityVo.class));
 		model.addAttribute("flowList", flowList);
 		model.addAttribute("FlowStatus", new FlowStatus());
@@ -82,7 +82,7 @@ public class FlowController {
 	public String networkHistory(Model model) {
 		return "/network_history";
 	}
-	
+
 	@GetMapping("/network_flow")
 	public String networkFlow(Model model) {
 		return "/network_flow";
@@ -100,7 +100,7 @@ public class FlowController {
 		return flowService.getJsonHistory(flowId, historyId);
 
 	}
-	
+
 	@GetMapping("/flow/getJsonFlow")
 	@ResponseBody
 	public String getJsonFlow(@RequestParam String flowId) {

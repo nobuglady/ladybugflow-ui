@@ -6,7 +6,7 @@ import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
 import io.github.nobuglady.network.fw.util.StringUtil;
 import io.github.nobuglady.network.ui.util.DateUtil;
 
-public class HistoryFlowEntityVo extends HistoryFlowEntity{
+public class HistoryFlowEntityVo extends HistoryFlowEntity {
 
 	public String getStartTimeVo() {
 		return DateUtil.dateToString(getStartTime(), DateUtil.FMT_YYYYMMDD_HHMMSS);

@@ -24,37 +24,45 @@ public class FlowEntityVo {
 	private int completeCount;
 	private int processingCount;
 	private int errorCount;
-	
+
 	public String getFlowId() {
 		return flowId;
 	}
+
 	public void setFlowId(String flowId) {
 		this.flowId = flowId;
 	}
+
 	public int getHistoryCount() {
 		return historyCount;
 	}
+
 	public void setHistoryCount(int historyCount) {
 		this.historyCount = historyCount;
 	}
+
 	public int getCompleteCount() {
 		return completeCount;
 	}
+
 	public void setCompleteCount(int completeCount) {
 		this.completeCount = completeCount;
 	}
+
 	public int getProcessingCount() {
 		return processingCount;
 	}
+
 	public void setProcessingCount(int processingCount) {
 		this.processingCount = processingCount;
 	}
+
 	public int getErrorCount() {
 		return errorCount;
 	}
+
 	public void setErrorCount(int errorCount) {
 		this.errorCount = errorCount;
 	}
-	
-	
+
 }
