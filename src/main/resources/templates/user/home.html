@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>home</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/home.css">
+<script type="text/javascript" src="/js/bootstrap/bootstrap-tab.js"></script>
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+		          
+		        </li>
+			</ul>
+
+          <ul class="navbar-nav nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <span
+						sec:authentication="name">Bob</span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                      <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+
+
+	</nav>
+	<div class="row">
+		<div class="col" style="padding-left:30px">Home</div>
+	</div>
+	<table style="width:100%">
+		<tr>
+			<td valign="top">
+				<table style="width:100%">
+					<tr th:each="entity:${flowList}">
+						<td>
+							<button class="btn btn-primary" type="button" style="width:100%;height:50px;font-size:x-large;" onClick="flowMenu(this)" th:attr="flowid=${entity.flowId}" th:text="${entity.flowName}">Button</button>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+		function refresh(){
+			window.location.reload();
+		}
+		
+		function flowMenu(btn){
+			window.location.href="/flow_menu?flowId="+$(btn).attr("flowid");
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+
+	</script>
+</body>
+</html>

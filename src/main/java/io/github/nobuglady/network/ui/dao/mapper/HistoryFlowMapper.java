@@ -21,6 +21,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryFlowEntity;
 
 /**
  * 
@@ -95,9 +96,14 @@ public interface HistoryFlowMapper {
 	// Extends
 	//////////////////////////////////////
 	// @formatter:off
-	@Select("SELECT * FROM history_flow ")
+	@Select("SELECT t1.flow_name, t2.* FROM flow_info t1 inner join history_flow t2 on t1.flow_id = t2.flow_id ")
 	// @formatter:on
-	public List<HistoryFlowEntity> selectAll();
+	public List<CustomHistoryFlowEntity> selectAll();
+	
+	// @formatter:off
+	@Select("SELECT t1.flow_name, t2.* FROM flow_info t1 inner join history_flow t2 on t1.flow_id = t2.flow_id and t1.flow_id = #{param1} and t2.create_user = #{param2}")
+	// @formatter:on
+	public List<CustomHistoryFlowEntity> selectHistoryByIdUser(String flowId, String userId);
 
 	// @formatter:off
 	@Select("SELECT * FROM history_flow where flow_id = #{param1} order by create_time desc LIMIT 1 ")

@@ -18,11 +18,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.github.nobuglady.network.fw.component.IFlowAccessor;
+import io.github.nobuglady.network.fw.constant.NodeStatusDetail;
 import io.github.nobuglady.network.fw.persistance.entity.FlowEntity;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryEdgeEntity;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
 import io.github.nobuglady.network.fw.persistance.entity.HistoryNodeEntity;
 import io.github.nobuglady.network.ui.SpringContextBridge;
+import io.github.nobuglady.network.ui.dao.entity.FlowInfoEntity;
+import io.github.nobuglady.network.ui.dao.entity.HistoryNodeStatusEntity;
 
 /**
  * 
@@ -37,11 +40,15 @@ public class FlowAccessor implements IFlowAccessor {
 	private HistoryFlowDao historyFlowDao;
 	private HistoryNodeDao historyNodeDao;
 	private HistoryEdgeDao historyEdgeDao;
+	private HistoryNodeStatusDao historyNodeStatusDao;
+	private FlowInfoDao flowInfoDao;
 
 	public FlowAccessor() {
 		historyFlowDao = SpringContextBridge.getInstance().getHistoryFlowDao();
 		historyNodeDao = SpringContextBridge.getInstance().getHistoryNodeDao();
 		historyEdgeDao = SpringContextBridge.getInstance().getHistoryEdgeDao();
+		historyNodeStatusDao = SpringContextBridge.getInstance().getHistoryNodeStatusDao();
+		flowInfoDao = SpringContextBridge.getInstance().getFlowInfoDao();
 	}
 
 	/**
@@ -118,6 +125,13 @@ public class FlowAccessor implements IFlowAccessor {
 	 */
 	public void updateNodeStatusByNodeId(String flowId, String historyId, String nodeId, int nodeStatus) {
 		historyNodeDao.updateStatusByNodeId(flowId, historyId, nodeId, nodeStatus);
+		HistoryNodeStatusEntity entity = new HistoryNodeStatusEntity();
+		entity.setFlowId(flowId);
+		entity.setNodeId(nodeId);
+		entity.setHistoryId(historyId);
+		entity.setNodeStatus(nodeStatus);
+		entity.setNodeStatusDetail(NodeStatusDetail.NONE);
+		historyNodeStatusDao.save(entity);
 	}
 
 	/**
@@ -158,6 +172,18 @@ public class FlowAccessor implements IFlowAccessor {
 	}
 
 	/**
+	 * selectEdgeByKey
+	 * 
+	 * @param flowId flowId
+	 * @param edgeId edgeId
+	 * @param historyId historyId
+	 * @return HistoryEdgeEntity
+	 */
+	public HistoryEdgeEntity selectEdgeByKey(String flowId, String edgeId, String historyId) {
+		return historyEdgeDao.selectByKey(flowId, edgeId, historyId);
+	}
+
+	/**
 	 * updateFlowStatusAndFinishTime
 	 * 
 	 * @param flowId     flowId
@@ -191,6 +217,13 @@ public class FlowAccessor implements IFlowAccessor {
 	public void updateNodeStatusDetailByNodeId(String flowId, String historyId, String nodeId, int nodeStatus,
 			int nodeStatusDetail) {
 		historyNodeDao.updateStatusDetailByNodeId(flowId, historyId, nodeId, nodeStatus, nodeStatusDetail);
+		HistoryNodeStatusEntity entity = new HistoryNodeStatusEntity();
+		entity.setFlowId(flowId);
+		entity.setNodeId(nodeId);
+		entity.setHistoryId(historyId);
+		entity.setNodeStatus(nodeStatus);
+		entity.setNodeStatusDetail(nodeStatusDetail);
+		historyNodeStatusDao.save(entity);
 	}
 
 	/**
@@ -221,9 +254,12 @@ public class FlowAccessor implements IFlowAccessor {
 	 * saveFlow
 	 * 
 	 * @param flowEntity flowEntity
+	 * @param json       json
 	 */
-	public void saveFlow(FlowEntity flowEntity) {
+	public void saveFlow(FlowEntity flowEntity, String json) {
 
+		json = json.trim();
+		
 		historyFlowDao.save(flowEntity.flowEntity);
 
 		for (HistoryEdgeEntity historyEdgeEntity : flowEntity.edgeEntityList) {
@@ -232,6 +268,26 @@ public class FlowAccessor implements IFlowAccessor {
 
 		for (HistoryNodeEntity historyNodeEntity : flowEntity.nodeEntityList) {
 			historyNodeDao.save(historyNodeEntity);
+		}
+
+		FlowInfoEntity flowInfoEntity = flowInfoDao.selectByKey(flowEntity.flowEntity.getFlowId());
+
+		if (flowInfoEntity != null) {
+			if (!flowInfoEntity.getFlowJson().equals(json)) {
+				flowInfoEntity.setFlowName(flowEntity.flowEntity.getFlowName());
+				flowInfoEntity.setFlowDesc(flowEntity.flowEntity.getFlowDesc());
+				flowInfoEntity.setFlowJson(json);
+
+				flowInfoDao.update(flowInfoEntity);
+			}
+		} else {
+			flowInfoEntity = new FlowInfoEntity();
+			flowInfoEntity.setFlowId(flowEntity.flowEntity.getFlowId());
+			flowInfoEntity.setFlowName(flowEntity.flowEntity.getFlowName());
+			flowInfoEntity.setFlowDesc(flowEntity.flowEntity.getFlowDesc());
+			flowInfoEntity.setFlowJson(json);
+
+			flowInfoDao.save(flowInfoEntity);
 		}
 
 	}
@@ -247,6 +303,17 @@ public class FlowAccessor implements IFlowAccessor {
 		historyFlowDao.deleteAllByKey(flowId, historyId);
 		historyNodeDao.deleteByFlowHistoryId(flowId, historyId);
 		historyEdgeDao.deleteByFlowHistoryId(flowId, historyId);
+	}
+
+	/**
+	 * updateNodeStartTime
+	 * 
+	 * @param flowId flowId
+	 * @param nodeId nodeId
+	 * @param historyId historyId
+	 */
+	public void updateNodeStartTime(String flowId, String nodeId, String historyId) {
+		historyNodeDao.updateNodeStartTime(flowId, nodeId, historyId);
 	}
 
 }

@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ladybugflow</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	
+	<script type="text/javascript" src="/js/jstree/jstree.js"></script>
+	<link rel="stylesheet" href="/js/jstree/themes/default/style.min.css" />
+	
+    <style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 387px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+
+			<ul class="navbar-nav mr-auto">
+			<!-- 
+				<li class="nav-item">
+		          <a class="nav-link" href="/admin/create_flow" target="_blank">Create Flow</a>
+		        </li>
+		         -->
+		        <li class="nav-item">
+		          <a class="nav-link" href="/home">Flow</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/user">User</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/role">Role</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/category">Category</a>
+		        </li>
+			</ul>
+
+          <ul class="navbar-nav nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <span
+						sec:authentication="name">Bob</span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                      <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+
+
+	</nav>
+<table>
+	<tr>
+		<td valign="top">
+			<div>
+				<textarea id="jsonTxt" rows="16" cols="50">
+{
+	"flowId":"123",
+	"flowName":"my flow",
+	"nodes":[
+		{
+			"id":"1",
+			"label":"start"
+		},
+		{
+			"id":"2",
+			"label":"exec1"
+		}
+
+	],
+	"edges":[
+		{
+			"id":"1",
+			"from":"1",
+			"to":"2",
+			"arrows":"to"
+		}
+	]
+}
+				</textarea>
+				<br/>
+				<input type="button" value="save flow" onClick="saveFlow()"/>
+				<input type="button" value="show network" onClick="showNetwork()"/>
+			</div>
+		</td>
+		<td valign="top">
+			<div id="mynetwork"></div>
+			<input type="button" value="update json" onClick="updateJson()"/>
+		</td>
+		<td valign="top">
+			<div id="node-div" style="display:none">
+	          <table>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-id">Id</label></td>
+	              <td><input id="node-id" type="text" value="6" disabled/></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-label">Label</label></td>
+	              <td><input id="node-label" type="text" value="Node 6" /></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-readyCheck">Ready check</label></td>
+	              <td>
+	              		<input type="radio" id="node-readyCheck_0" name="node-readyCheck" value="0" checked>Wait all</input>
+	              		<input type="radio" id="node-readyCheck_1" name="node-readyCheck" value="1"/>Wait one</input>
+	              </td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-startType">Start type</label></td>
+	              <td>
+	              		<input type="radio" id="node-startType_0" name="node-startType" value="0" checked>Default</input>
+	              		<input type="radio" id="node-startType_3" name="node-startType" value="3"/>Timer</input>
+	              </td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-label">Cron</label></td>
+	              <td><input id="node-startCron" type="text" value="0 0/5 * * * ?" /></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-executeType">Execute type</label></td>
+	              <td>
+	              		<input type="radio" id="node-executeType_0" name="node-executeType" value="0" checked>Default</input>
+	              		<input type="radio" id="node-executeType_2" name="node-executeType" value="2"/>Wait Request</input>
+	              </td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-displayFlag">Display flag</label></td>
+	              <td>
+	              		<input type="radio" id="node-displayFlag_0" name="node-displayFlag" value="0" checked>NO</input>
+	              		<input type="radio" id="node-displayFlag_1" name="node-displayFlag" value="1"/>YES</input>
+	              </td>
+	            </tr>
+	            <tr>
+	            	<td></td>
+	            	<td></td>
+	            	<td>
+	            		<button id="sel-category-node" onClick="selectCategoryNode()">Select Category</button>
+	            		<div id="categoryDivNode"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+		            <td></td>
+		            <td></td>
+	            	<td>
+	            		<button id="sel-role-node" onClick="selectRoleNode()">Select Role</button>
+	            		<div id="roleDivNode"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="node-watchFlag">Watch flag</label></td>
+	              <td>
+	              		<input type="radio" id="node-watchFlag_0" name="node-watchFlag" value="0" checked>ALL</input>
+	              		<input type="radio" id="node-watchFlag_1" name="node-watchFlag" value="1"/>MySelf</input>
+	              </td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td>Action</td>
+	              <td>
+	                <button id="node-update" onclick="updateNode();">Update</button>
+	                <button id="node-remove" onclick="removeNode();">Remove</button>
+	              </td>
+	            </tr>
+	          </table>
+          	</div>
+          	<div id="edge-div" style="display:none">
+	          <table>
+	            <tr>
+	              <td></td>
+	              <td><label for="edge-id">Id</label></td>
+	              <td><input id="edge-id" type="text" value="6" disabled/></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="edge-label">Label</label></td>
+	              <td><input id="edge-label" type="text" value="" /></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="edge-condition">Value</label></td>
+	              <td><input id="edge-condition" type="text" value="Edge 6" /></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="edge-displayFlag">Display flag</label></td>
+	              <td>
+	              		<input type="radio" id="edge-displayFlag_0" name="edge-displayFlag" value="0" checked>NO</input>
+	              		<input type="radio" id="edge-displayFlag_1" name="edge-displayFlag" value="1"/>YES</input>
+	              </td>
+	            </tr>
+	            <tr>
+	            	<td></td>
+	            	<td></td>
+	            	<td>
+	            		<button id="sel-category-edge" onClick="selectCategoryEdge()">Select Category</button>
+	            		<div id="categoryDivEdge"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+		            <td></td>
+		            <td></td>
+	            	<td>
+	            		<button id="sel-role-edge" onClick="selectRoleEdge()">Select Role</button>
+	            		<div id="roleDivEdge"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td>Action</td>
+	              <td>
+	                <button id="edge-update" onclick="updateEdge();">Update</button>
+	                <button id="edge-remove" onclick="removeEdge();">Remove</button>
+	              </td>
+	            </tr>
+	          </table>
+          	</div>
+          	<div id="flow-div" style="display:none">
+	          <table>
+	            <tr>
+	              <td></td>
+	              <td><label for="flow-id">Id</label></td>
+	              <td><input id="flow-id" type="text" value=""/></td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td><label for="flow-label">Label</label></td>
+	              <td><input id="flow-label" type="text" value="" /></td>
+	            </tr>
+	            <tr>
+	            	<td></td>
+	            	<td></td>
+	            	<td>
+	            		<button id="sel-category-flow" onClick="selectCategoryFlow()">Select Category</button>
+	            		<div id="categoryDivFlow"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+		            <td></td>
+		            <td></td>
+	            	<td>
+	            		<button id="sel-role-flow" onClick="selectRoleFlow()">Select Role</button>
+	            		<div id="roleDivFlow"></div>
+	            	</td>
+	            </tr>
+	            <tr>
+	              <td></td>
+	              <td>Action</td>
+	              <td>
+	                <button id="flow-update" onclick="updateFlow();">Update</button>
+	              </td>
+	            </tr>
+	          </table>
+          	</div>
+		</td>
+	</tr>
+</table>
+
+
+<!-- Category -->
+<div class="modal fade" id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="categoryModelTitle">Category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<div>
+			<input type="text" id="plugins4_q" name="plugins4_q"/>
+		</div>
+		<div id="jstree_demo" class="overflow-auto" style="height:360px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="save_category_click()"class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Role -->
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="roleModelTitle">Role</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		   <div id="role_list_div">
+		   	
+		   </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="save_role_click()"class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+
+var categoryOpenMode;
+var roleOpenMode;
+
+function selectCategoryNode(){
+	categoryOpenMode = "node";
+	$('#categoryModal').modal('show');
+}
+
+function selectRoleNode(){
+	roleOpenMode = "node";
+	$('#roleModal').modal('show');
+}
+
+function selectCategoryEdge(){
+	categoryOpenMode = "edge";
+	$('#categoryModal').modal('show');
+}
+
+function selectRoleEdge(){
+	roleOpenMode = "edge";
+	$('#roleModal').modal('show');
+}
+
+function selectCategoryFlow(){
+	categoryOpenMode = "flow";
+	$('#categoryModal').modal('show');
+}
+
+function selectRoleFlow(){
+	roleOpenMode = "flow";
+	$('#roleModal').modal('show');
+}
+
+var checked_ids_category_node = [];
+var checked_ids_category_edge = [];
+var checked_ids_category_flow = [];
+function save_category_click(){
+	if(categoryOpenMode == "node"){
+		checked_ids_category_node = $("#jstree_demo").jstree("get_checked",null,true);
+	    console.log(checked_ids_category_node);
+	    $("#categoryDivNode").text(getCategoryArrayStr(checked_ids_category_node));
+		$('#categoryModal').modal('hide');
+	}else if(categoryOpenMode == "edge"){
+		checked_ids_category_edge = $("#jstree_demo").jstree("get_checked",null,true);
+	    console.log(checked_ids_category_edge);
+	    $("#categoryDivEdge").text(getCategoryArrayStr(checked_ids_category_edge));
+		$('#categoryModal').modal('hide');
+	}else if(categoryOpenMode == "flow"){
+		checked_ids_category_flow = $("#jstree_demo").jstree("get_checked",null,true);
+	    console.log(checked_ids_category_flow);
+	    $("#categoryDivFlow").text(getCategoryArrayStr(checked_ids_category_flow));
+		$('#categoryModal').modal('hide');
+	}
+
+}
+
+var checked_ids_role_node = [];
+var checked_ids_role_edge = [];
+var checked_ids_role_flow = [];
+
+function save_role_click(){
+	checked_ids_role_node = [];
+	checked_ids_role_edge = [];
+	checked_ids_role_flow = [];
+	
+	if(roleOpenMode == "node"){
+		$('input[name="user_role_check"]:checked').each(function(index, element){
+			var roleId = $(element).val();
+			checked_ids_role_node.push(roleId);
+		});
+		
+		console.log(checked_ids_role_node);
+		$("#roleDivNode").text(getRoleArrayStr(checked_ids_role_node));
+		$('#roleModal').modal('hide');
+	}else if(roleOpenMode == "edge"){
+		$('input[name="user_role_check"]:checked').each(function(index, element){
+			var roleId = $(element).val();
+			checked_ids_role_edge.push(roleId);
+		});
+		
+		console.log(checked_ids_role_edge);
+		$("#roleDivEdge").text(getRoleArrayStr(checked_ids_role_edge));
+		$('#roleModal').modal('hide');
+	}else if(roleOpenMode == "flow"){
+		$('input[name="user_role_check"]:checked').each(function(index, element){
+			var roleId = $(element).val();
+			checked_ids_role_flow.push(roleId);
+		});
+		
+		console.log(checked_ids_role_flow);
+		$("#roleDivFlow").text(getRoleArrayStr(checked_ids_role_flow));
+		$('#roleModal').modal('hide');
+	}
+
+}
+
+
+$('#jstree_demo').on('changed.jstree', function (e, data) {
+    var path = data.instance.get_path(data.node,'/');
+	
+	currentPath = path;
+	
+	if(path){
+		
+		if(data.node.type === 'file'){
+
+		}else{
+							
+
+		}
+	}
+	
+})
+
+function loadtree(){
+	$('#jstree_demo').jstree({
+	  "core" : {
+	    "animation" : 0,
+	    "check_callback" : true,
+	    "themes" : { "stripes" : true },
+	    'data' : {
+	      'url' : function (node) {
+				if(node.id === '#'){
+					return '/home/request_catagory_select';
+				}else{
+					return 'ajax_demo_children.json';
+				}
+	      },
+	      'data' : function (node) {
+	        return { 'id' : node.id };
+	      }
+	    }
+	  },
+	  "types" : {
+	    "#" : {
+	      "max_children" : 1,
+	      "max_depth" : 4,
+	      "valid_children" : ["root"]
+	    },
+	    "root" : {
+	      "valid_children" : ["default"]
+	    },
+	    "default" : {
+	      "icon" : "fa fa-sitemap",
+	      "valid_children" : ["default","file"]
+	    },
+	    "file" : {
+	      "icon" : "fa fa-user",
+	      "valid_children" : []
+	    },
+	  },
+	  "checkbox" : {
+	    "keep_selected_style" : false
+	  },
+	  "plugins" : [
+	    "contextmenu", "dnd", "search",
+	    "state", "types", "wholerow", "checkbox"
+	  ]
+	});
+	  var to = false;
+	  $('#plugins4_q').keyup(function () {
+	    if(to) { clearTimeout(to); }
+	    to = setTimeout(function () {
+	      var v = $('#plugins4_q').val();
+	      $('#jstree_demo').jstree(true).search(v,false,true);
+	    }, 250);
+	  });
+	  $('#plugins4_q_1').keyup(function () {
+	    if(to) { clearTimeout(to); }
+	    to = setTimeout(function () {
+	      var v = $('#plugins4_q_1').val();
+	      $('#jstree_demo').jstree(true).search(v,false,true);
+	    }, 250);
+	  });
+
+
+}
+
+var roleMap = {};
+function loadRole(){
+	postJson(
+			'/admin/request_user_load_role',
+			{
+				
+			},
+			function (data) {
+		        var responseObj = data;
+				$("#role_list_div").html("");
+				for(role of responseObj){
+					
+					roleMap[role.roleId] = role.roleName;
+					
+					var newTrHtml = `
+						<div class="form-check">
+						  <input class="form-check-input" type="checkbox" value="#id#" name="user_role_check" id="user_role_check_#id#">
+						  <label class="form-check-label" for="defaultCheck1">
+						    #role_name#
+						  </label>
+						</div>
+					`;
+					
+					newTrHtml = newTrHtml.split("#id#").join(role.roleId);
+					newTrHtml = newTrHtml.split("#role_name#").join(role.roleName);
+					
+					var existHtml = $("#role_list_div").html();
+					
+					$("#role_list_div").html(existHtml+newTrHtml);
+				}
+				
+			}
+		);
+		
+}
+
+</script>
+<script type="text/javascript">
+	var nodes;
+	var edges;
+	var flow = {};
+	
+	function updateJson(){
+		
+		var jsonObj = {
+				flowId:"123",
+				flowName:"my flow"
+		};
+		
+		if(document.getElementById("jsonTxt").value != ""){
+			jsonObj = JSON.parse(document.getElementById("jsonTxt").value);
+		}
+		
+		jsonObj.flowId = flow.id;
+		jsonObj.flowName = flow.label;
+		jsonObj.categorys = flow.categorys;
+		jsonObj.roles = flow.roles;
+		
+		jsonObj.nodes = [];
+		jsonObj.edges = [];
+		
+		nodes.forEach(element => jsonObj.nodes.push(
+				{
+					"id":element.id,
+					"label":element.label,
+					"readyCheck":element.readyCheck,
+					"startType":element.startType,
+					"executeType":element.executeType,
+					"startCron":element.startCron,
+					"displayFlag":element.displayFlag,
+					"watchFlag":element.watchFlag,
+					"categorys":element.categorys,
+					"roles":element.roles
+				}
+		));
+		
+		edges.forEach(element => jsonObj.edges.push(
+				{
+					"id":element.id,
+					"from":element.from,
+					"to":element.to,
+					"label":element.label,
+					"condition":element.condition,
+					"displayFlag":element.displayFlag,
+					"arrows":element.arrows,
+					"categorys":element.categorys,
+					"roles":element.roles
+				}
+		));
+		
+		document.getElementById("jsonTxt").value = JSON.stringify(jsonObj, null, "\t");
+	}
+
+	function updateNode() {
+	    try {
+	      nodes.update({
+	        id: document.getElementById("node-id").value,
+	        label: document.getElementById("node-label").value,
+	      });
+	      nodes.update({
+	        id: document.getElementById("node-id").value,
+	        readyCheck: getReadyCheck(),
+	      });
+	      nodes.update({
+	        id: document.getElementById("node-id").value,
+	        startType: getStartType(),
+	      });
+	      nodes.update({
+		        id: document.getElementById("node-id").value,
+		        executeType: getExecuteType(),
+		      });
+	      nodes.update({
+		        id: document.getElementById("node-id").value,
+		        displayFlag: getDisplayFlagNode(),
+		      });
+	      nodes.update({
+		        id: document.getElementById("node-id").value,
+		        displayFlag: getWatchFlagNode(),
+		      });
+	      nodes.update({
+	        id: document.getElementById("node-id").value,
+	        startCron: document.getElementById("node-startCron").value,
+	      });
+	      nodes.update({
+		        id: document.getElementById("node-id").value,
+		        categorys: checked_ids_category_node,
+		      });
+	      nodes.update({
+		        id: document.getElementById("node-id").value,
+		        roles: checked_ids_role_node,
+		      });
+	    } catch (err) {
+	      alert(err);
+	    }
+	}
+	
+	function removeNode() {
+	    try {
+	      nodes.remove({ id: document.getElementById("node-id").value });
+	    } catch (err) {
+	      alert(err);
+	    }
+	}
+	
+	function updateEdge() {
+	    try {
+	      edges.update({
+	        id: document.getElementById("edge-id").value,
+	        condition: document.getElementById("edge-condition").value,
+	      });
+	      edges.update({
+		        id: document.getElementById("edge-id").value,
+		        label: document.getElementById("edge-label").value,
+		      });
+	      edges.update({
+		        id: document.getElementById("edge-id").value,
+		        displayFlag: getDisplayFlagEdge(),
+		      });
+	      edges.update({
+		        id: document.getElementById("edge-id").value,
+		        categorys: checked_ids_category_edge,
+		      });
+	      edges.update({
+		        id: document.getElementById("edge-id").value,
+		        roles: checked_ids_role_edge,
+		      });
+	    } catch (err) {
+	      alert(err);
+	    }
+	}
+	
+	function removeEdge() {
+	    try {
+	      edges.remove({ id: document.getElementById("edge-id").value });
+	    } catch (err) {
+	      alert(err);
+	    }
+	}
+
+	function updateFlow() {
+		flow.id = document.getElementById("flow-id").value;
+		flow.label = document.getElementById("flow-label").value;
+		flow.categorys = checked_ids_category_flow;
+		flow.roles = checked_ids_role_flow;
+		
+	}
+	
+	function showNetwork(){
+		var jsonObj = JSON.parse(document.getElementById("jsonTxt").value);
+	    // create an array with nodes
+	    nodes = new vis.DataSet(jsonObj.nodes);
+
+	    // create an array with edges
+	    edges = new vis.DataSet(jsonObj.edges);
+
+	    flow.id = jsonObj.flowId;
+	    flow.label = jsonObj.flowName;
+	    flow.categorys = jsonObj.categorys;
+	    flow.roles = jsonObj.roles;
+	    
+	    // create a network
+	    var container = document.getElementById('mynetwork');
+
+	    // provide the data in the vis format
+	    var data = {
+	        nodes: nodes,
+	        edges: edges
+	    };
+	    var options = {
+    		layout: { randomSeed: 10 },
+
+            interaction: { hover: true },
+            manipulation: {
+              enabled: true,
+              addEdge: function (data, callback) {
+   			  	 data.arrows = "to";
+                 callback(data);
+               },
+            }
+	    };
+
+	    // initialize your network!
+	    var network = new vis.Network(container, data, options);
+	    
+	    network.on("click", function (params) {
+			var nodeName = this.getNodeAt(params.pointer.DOM);
+			if(nodeName){
+				
+				var node = nodes.get(params.nodes[0]);
+				
+				document.getElementById("node-id").value = node.id;
+				document.getElementById("node-label").value = node.label;
+				if(node.readyCheck){
+					setReadyCheck(node.readyCheck);
+				}else{
+					setReadyCheck(node.readyCheck);
+				}
+				if(node.startType){
+					setStartType(node.startType);
+				}else{
+					setStartType(node.startType);
+				}
+				if(node.executeType){
+					setExecuteType(node.executeType);
+				}else{
+					setExecuteType(node.executeType);
+				}
+				if(node.startCron){
+					document.getElementById("node-startCron").value = node.startCron;
+				}else{
+					document.getElementById("node-startCron").value = "";
+				}
+				if(node.displayFlag){
+					setDisplayFlagNode(node.displayFlag);
+				}else{
+					setDisplayFlagNode(node.displayFlag);
+				}
+				if(node.watchFlag){
+					setWatchFlagNode(node.watchFlag);
+				}else{
+					setWatchFlagNode(node.watchFlag);
+				}
+				
+
+				clearCategory();
+				clearRole();
+				
+				if(node.categorys){
+					checked_ids_category_node = node.categorys;
+
+					for(categoryId of checked_ids_category_node){
+						
+						$("#jstree_demo").jstree("check_node",categoryId);
+						
+					}
+					
+					$("#categoryDivNode").text(getCategoryArrayStr(checked_ids_category_node));
+				}
+				if(node.roles){
+					checked_ids_role_node = node.roles;
+
+					for(roleId of checked_ids_role_node){
+						
+						$("#user_role_check_"+roleId).prop('checked', true);
+						
+					}
+					
+					$("#roleDivNode").text(getRoleArrayStr(checked_ids_role_node));
+				}
+				
+				document.getElementById("flow-div").style.display = "none"
+				document.getElementById("edge-div").style.display = "none"
+				document.getElementById("node-div").style.display = ""
+			}else{
+				document.getElementById("flow-div").style.display = "none"
+				document.getElementById("node-div").style.display = "none"
+				
+				if(params.edges && params.edges.length == 1){
+					
+					var edge = edges.get(params.edges[0]);
+					
+					document.getElementById("edge-id").value = edge.id;
+					if(edge.label){
+						document.getElementById("edge-label").value = edge.label;
+					}
+					if(edge.condition){
+						document.getElementById("edge-condition").value = edge.condition;
+					}else{
+						document.getElementById("edge-condition").value = "";
+					}
+					if(edge.displayFlag){
+						setDisplayFlagEdge(edge.displayFlag);
+					}else{
+						setDisplayFlagEdge(edge.displayFlag);
+					}
+					
+
+					clearCategory();
+					clearRole();
+					
+					if(edge.categorys){
+						checked_ids_category_edge = edge.categorys;
+
+						for(categoryId of checked_ids_category_edge){
+							
+							$("#jstree_demo").jstree("check_node",categoryId);
+							
+						}
+						
+						$("#categoryDivEdge").text(getCategoryArrayStr(checked_ids_category_edge));
+					}
+					if(edge.roles){
+						checked_ids_role_edge = edge.roles;
+
+						for(roleId of checked_ids_role_edge){
+							
+							$("#user_role_check_"+roleId).prop('checked', true);
+							
+						}
+						
+						$("#roleDivEdge").text(getRoleArrayStr(checked_ids_role_edge));
+					}
+					
+					document.getElementById("edge-div").style.display = ""
+				}else{
+					
+					document.getElementById("node-div").style.display = "none"
+					document.getElementById("edge-div").style.display = "none"
+					
+					document.getElementById("flow-id").value = flow.id;
+					document.getElementById("flow-label").value = flow.label;
+					
+
+					clearCategory();
+					clearRole();
+					
+					if(flow.categorys){
+						checked_ids_category_flow = flow.categorys;
+
+						for(categoryId of checked_ids_category_flow){
+							
+							$("#jstree_demo").jstree("check_node",categoryId);
+							
+						}
+						
+						$("#categoryDivFlow").text(getCategoryArrayStr(checked_ids_category_flow));
+					}
+					if(flow.roles){
+						checked_ids_role_flow = flow.roles;
+
+						for(roleId of checked_ids_role_flow){
+							
+							$("#user_role_check_"+roleId).prop('checked', true);
+							
+						}
+						
+						$("#roleDivFlow").text(getRoleArrayStr(checked_ids_role_flow));
+					}
+					
+					document.getElementById("flow-div").style.display = ""
+
+				}
+			}
+	    });
+	}
+	
+	function clearCategory(){
+		checked_ids_category_node = [];
+		checked_ids_category_edge = [];
+		checked_ids_category_flow = [];
+		$("#categoryDivFlow").text("");
+		$("#categoryDivNode").text("");
+		$("#categoryDivEdge").text("");
+		$("#jstree_demo").jstree("uncheck_all");
+	}
+	
+	function clearRole(){
+		checked_ids_role_node = [];
+		checked_ids_role_edge = [];
+		checked_ids_role_flow = [];
+		$("#roleDivFlow").text("");
+		$("#roleDivNode").text("");
+		$("#roleDivEdge").text("");
+		$("input[name='user_role_check']:checkbox").prop('checked',false);
+	}
+	
+	function getRoleArrayStr(roles){
+		
+		var roleStrArray = [];
+		for(roleId of roles){
+			
+			if(roleMap[roleId]){
+				roleStrArray.push(roleMap[roleId]);
+			}else{
+				roleStrArray.push(roleId);
+			}
+			
+		}
+		
+		return roleStrArray;
+	}
+	
+	function getCategoryArrayStr(categorys){
+
+		var categoryStrArray = [];
+		for(categoryId of categorys){
+			
+			var nodeTmp = $("#jstree_demo").jstree("get_node",categoryId)
+
+			if(nodeTmp){
+				categoryStrArray.push(nodeTmp.text);
+			}else{
+				categoryStrArray.push(categoryId);
+			}
+			
+		}
+		
+		return categoryStrArray;
+	}
+	
+	function setReadyCheck(readyCheck){
+		if(readyCheck == "1"){
+			document.getElementById("node-readyCheck_1").checked = true;
+		}else{
+			document.getElementById("node-readyCheck_0").checked = true;
+		}
+	}
+	
+	function getReadyCheck(){
+		if(document.getElementById("node-readyCheck_1").checked){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	function setStartType(startType){
+		if(startType == "3"){
+			document.getElementById("node-startType_3").checked = true;
+		}else{
+			document.getElementById("node-startType_0").checked = true;
+		}
+	}
+	
+	function getStartType(){
+		if(document.getElementById("node-startType_3").checked){
+			return 3;
+		}else{
+			return 0;
+		}
+	}
+
+	function setExecuteType(executeType){
+		if(executeType == "2"){
+			document.getElementById("node-executeType_2").checked = true;
+		}else{
+			document.getElementById("node-executeType_0").checked = true;
+		}
+	}
+	
+	function getExecuteType(){
+		if(document.getElementById("node-executeType_2").checked){
+			return 2;
+		}else{
+			return 0;
+		}
+	}
+
+	function setDisplayFlagNode(displayFlag){
+		if(displayFlag == "1"){
+			document.getElementById("node-displayFlag_1").checked = true;
+		}else{
+			document.getElementById("node-displayFlag_0").checked = true;
+		}
+	}
+	
+	function getDisplayFlagNode(){
+		if(document.getElementById("node-displayFlag_1").checked){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	function setDisplayFlagEdge(displayFlag){
+		if(displayFlag == "1"){
+			document.getElementById("edge-displayFlag_1").checked = true;
+		}else{
+			document.getElementById("edge-displayFlag_0").checked = true;
+		}
+	}
+	
+	function getDisplayFlagEdge(){
+		if(document.getElementById("edge-displayFlag_1").checked){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	function setWatchFlagNode(watchFlag){
+		if(watchFlag == "1"){
+			document.getElementById("node-watchFlag_1").checked = true;
+		}else{
+			document.getElementById("node-watchFlag_0").checked = true;
+		}
+	}
+	
+	function getWatchFlagNode(){
+		if(document.getElementById("node-watchFlag_1").checked){
+			return 1;
+		}else{
+			return 0;
+		}
+	}
+
+	showNetwork();
+	
+	//////////////////////////////
+
+	function saveFlow(){
+		post("/admin/flow/save", 
+				{
+					json:document.getElementById("jsonTxt").value
+				}, 
+				function(data){
+					console.log(data);
+				});
+	}
+	
+	function post(requestUrl, requestData, callBack){
+	    $.ajax({
+	        url:requestUrl,
+	        type:'POST',
+	        data:requestData
+	    }).done( (data, status, xhr) => {
+	        console.log(data);
+			
+	        callBack(data);
+
+	    }).fail( (data) => {
+	        console.log(data);
+	    }).always( (data) => {
+
+	    });
+	}
+	
+
+	function postJson(requestUrl, requestData, callBack){
+	    $.ajax({
+	        url:requestUrl,
+	        type:'POST',
+			contentType: 'application/json',
+			dataType: 'json',
+	        data:JSON.stringify(requestData)
+	    }).done( (data, status, xhr) => {
+	        console.log(data);
+			var ct = xhr.getResponseHeader("content-type") || "";
+			if (ct.indexOf('html') > -1) {
+			    window.location.replace("/login");
+			}
+
+	        callBack(data);
+	    }).fail( (data) => {
+	        console.log(data);
+	    }).always( (data) => {
+
+	    });
+	}
+
+
+	loadtree();
+	loadRole();
+</script>
+</body>
+</html>

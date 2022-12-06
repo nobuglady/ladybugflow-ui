@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>home</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/home.css">
+<script src="/js/home.js"></script>
+<script type="text/javascript" src="/js/bootstrap/bootstrap-tab.js"></script>
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+			<ul class="navbar-nav mr-auto">
+			</ul>
+
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link" href="#"><span
+						sec:authentication="name">Bob</span></a></li>
+				<li class="nav-item"><a class="nav-link" href="/logout">logout</a>
+				</li>
+			</ul>
+
+		</div>
+	</nav>
+	<div class="row">
+		<div class="col" style="padding-left:30px">Home -> Menu -> Action</div>
+		<div class="col text-right float-right" style="padding-right:30px"><a href="javascript:history.go(-1)">Back</a></div>
+	</div>
+	<table style="width:100%">
+		<tr>
+			<td valign="top">
+				<table style="width:100%">
+					<tr th:each="entity:${nodeList}">
+						<td>
+							<button type="button" class="btn btn-primary" style="width:100%;height:50px;font-size:x-large;margin-top:5px" onClick="actionList(this)" th:attr="flowid=${flowId},nodeid=${entity.id}" th:text="${entity.label}">aaa</button>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+<script type="text/javascript">
+
+function actionList(btn){
+	window.location.href="/action_list?flowId="+$(btn).attr("flowid")+"&nodeId="+$(btn).attr("nodeid");
+}
+
+</script>
+</body>
+</html>

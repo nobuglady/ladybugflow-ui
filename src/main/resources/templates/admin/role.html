@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>admin</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="/js/jstree/jstree.js"></script>
+    <script type="text/javascript" src="/js/admin/admin.js"></script>
+    <script type="text/javascript" src="/js/admin/admin_category.js"></script>
+    
+    <link rel="stylesheet" href="/js/jstree/themes/default/style.min.css" />
+	
+  </head>
+  <body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+
+			<ul class="navbar-nav mr-auto">
+			<!-- 
+				<li class="nav-item">
+		          <a class="nav-link" href="/admin/create_flow" target="_blank">Create Flow</a>
+		        </li>
+		         -->
+		        <li class="nav-item">
+		          <a class="nav-link" href="/home">Flow</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/user">User</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/role">Role</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/category">Category</a>
+		        </li>
+			</ul>
+
+          <ul class="navbar-nav nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <span
+						sec:authentication="name">Bob</span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                      <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+
+
+	</nav>
+  	<table>
+  		<tr>
+  			<!-- Middle -->
+  			<td valign="top">
+  				<div align="right">
+  					<span id="menu"></span>
+  				</div>
+				<div>
+
+					<div class="tab-content" id="myTabContent" style="width:800px">
+					
+					  <!-- role -->
+					  <div class="tab-pane fade show active" id="role" role="tabpanel" aria-labelledby="role-tab">
+					  
+					    <div style="border: 1px solid #ccc4c3; padding:5px; border-radius:0.5em">
+					    	<div class="row" style="margin-left:10px">
+					    		<div class="col-xs-2" style="margin-right:5px">
+									<a href="javascript:role_create_click()"><i  id="btn_role_new" class="fa fa-file-o fa-lg"></i></a>
+								</div>
+							</div>
+						</div>
+						
+						<table class="table table-hover table-dark">
+						  <thead>
+						    <tr>
+						      <th scope="col">ID</th>
+						      <th scope="col">Role</th>
+						      <th scope="col">Remark</th>
+						      <th scope="col"></th>
+						    </tr>
+						  </thead>
+						  <tbody id="roleListBody">
+
+						  </tbody>
+						</table>
+						
+					  </div>
+
+					</div>
+				</div>
+  			</td>
+  			
+  		</tr>
+  	</table>
+
+<!-- Create user -->
+<div class="modal fade" id="userCreateModal" tabindex="-1" role="dialog" aria-labelledby="userCreateModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userCreateModelTitle">Create User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<form id="user_create_form" class="needs-validation" novalidate oninput='user_repassword.setCustomValidity(user_repassword.value != user_password.value ? "Passwords do not match." : "")'>
+		  <input type="hidden" id="user_id" name="user_id"/>
+		  <div class="form-group">
+		    <label for="user_email">Email address</label>
+		    <input type="text" class="form-control" id="user_email" placeholder="" required pattern=".{1,50}">
+		  </div>
+		  <div class="form-group">
+		    <label for="user_name">Nick name</label>
+		    <input type="text" class="form-control" id="user_name" placeholder="" required pattern=".{1,50}">
+		  </div>
+		  <div class="form-group">
+		    <label for="user_password">Password</label>
+		      <input type="password" class="form-control" id="user_password" name="user_password" placeholder="" required pattern=".{1,500}">
+		      <input type="password" class="form-control" id="user_repassword" name="user_repassword" placeholder="" required pattern=".{1,500}">
+		  </div>
+		   <div id="user_create_list_id">
+		   	
+		   </div>
+		   <div class="form-group">
+				<div id="jstree_demo_category" class="overflow-auto" style="height:150px;"></div>
+		   </div>
+		  <div class="form-group">
+		    <label for="user_remarks">Remarks</label>
+		    <textarea class="form-control" id="user_remarks" rows="3"></textarea>
+		  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="save_user_click()"class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create role -->
+<div class="modal fade" id="roleCreateModal" tabindex="-1" role="dialog" aria-labelledby="roleCreateModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="roleCreateModelTitle">Create Role</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		<form id="role_create_form" class="needs-validation" novalidate>
+		  <div class="form-group">
+		  	<input type="hidden" id="role_id" name="role_id"/>
+		    <label for="role_name">Role name</label>
+		    <input type="text" class="form-control" id="role_name" placeholder="" required pattern=".{1,50}">
+	        <div class="invalid-feedback">
+	          Please input role name with(1 to 50 characters).
+	        </div>
+		  </div>
+		   <div id="role_create_list_id">
+		   	
+		   </div>
+		  <div class="form-group">
+		    <label for="role_remarks">Remarks</label>
+		    <textarea class="form-control" id="role_remarks" rows="3"></textarea>
+		  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="save_role_click()" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- delete -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelTitle">Delete</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		Are you sure delete <span id="delete_name"></span> ?
+		<input type="hidden" id="delete_type", name="delete_type"/>
+		<input type="hidden" id="delete_id", name="delete_id"/>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" onClick="delete_click()" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </body>
+</html>

@@ -19,6 +19,7 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -49,5 +50,21 @@ public class LoginController {
 		}
 		return "login";
 	}
+	
+
+    @RequestMapping("/admin/user")
+    public String user() {
+        return "/admin/user";
+    }
+    
+    @RequestMapping("/admin/role")
+    public String role() {
+        return "/admin/role";
+    }
+    
+    @RequestMapping("/admin/category")
+    public String category() {
+        return "/admin/category";
+    }
 
 }

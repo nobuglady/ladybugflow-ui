@@ -12,14 +12,23 @@
  */
 package io.github.nobuglady.network.ui.dao;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.nobuglady.network.fw.constant.FlowStatus;
+import io.github.nobuglady.network.fw.model.FlowDto;
 import io.github.nobuglady.network.fw.persistance.entity.FlowEntity;
-import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
 import io.github.nobuglady.network.ui.SpringContextBridge;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryFlowEntity;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryNodeEntity;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryNodeStatusEntity;
+import io.github.nobuglady.network.ui.dao.entity.FlowInfoEntity;
 
 /**
  * 
@@ -34,11 +43,15 @@ public class FlowAccessorUI {
 	private HistoryFlowDao historyFlowDao;
 	private HistoryNodeDao historyNodeDao;
 	private HistoryEdgeDao historyEdgeDao;
+	private HistoryNodeStatusDao historyNodeStatusDao;
+	private FlowInfoDao flowInfoDao;
 
 	public FlowAccessorUI() {
 		historyFlowDao = SpringContextBridge.getInstance().getHistoryFlowDao();
 		historyNodeDao = SpringContextBridge.getInstance().getHistoryNodeDao();
 		historyEdgeDao = SpringContextBridge.getInstance().getHistoryEdgeDao();
+		historyNodeStatusDao = SpringContextBridge.getInstance().getHistoryNodeStatusDao();
+		flowInfoDao = SpringContextBridge.getInstance().getFlowInfoDao();
 	}
 
 	/**
@@ -63,12 +76,114 @@ public class FlowAccessorUI {
 	}
 
 	/**
-	 * selectAll
+	 * selectAllHistory
 	 * 
 	 * @return HistoryFlowEntity
 	 */
-	public List<HistoryFlowEntity> selectAll() {
+	public List<CustomHistoryFlowEntity> selectAllHistory() {
 		return historyFlowDao.selectAll();
+	}
+
+	/**
+	 * selectAllHistory
+	 * 
+	 * @return HistoryFlowEntity
+	 */
+	public List<CustomHistoryFlowEntity> selectHistoryByIdUser(String flowId, int userId) {
+		return historyFlowDao.selectHistoryByIdUser(flowId, userId);
+	}
+
+	/**
+	 * selectByFlowHistoryId
+	 * 
+	 * @return CustomHistoryNodeStatusEntity
+	 */
+	public List<CustomHistoryNodeStatusEntity> selectByFlowHistoryId(String flowId, String historyId) {
+		return historyNodeStatusDao.selectByFlowHistoryId(flowId, historyId);
+	}
+
+	/**
+	 * selectAllFlow
+	 * 
+	 * @return FlowInfoEntity
+	 */
+	public List<FlowInfoEntity> selectAllFlow() {
+		return flowInfoDao.selectAll();
+	}
+
+	public FlowInfoEntity selectFlowByKey(String flowId) {
+		return flowInfoDao.selectByKey(flowId);
+	}
+
+	/**
+	 * saveFlowInfo
+	 * 
+	 * @param json
+	 */
+	public void saveOrUpdateFlowInfo(String json) {
+		
+		json = json.trim();
+		
+		try (Reader reader = new StringReader(json)) {
+
+			ObjectMapper mapper = new ObjectMapper();
+			FlowDto flowDto = mapper.readValue(reader, FlowDto.class);
+
+			FlowInfoEntity flowInfoEntity = flowInfoDao.selectByKey(flowDto.flowId);
+
+			if (flowInfoEntity != null) {
+				if (!flowInfoEntity.getFlowJson().equals(json)) {
+					flowInfoEntity.setFlowName(flowDto.flowName);
+					flowInfoEntity.setFlowDesc("");
+					flowInfoEntity.setFlowJson(json);
+
+					flowInfoDao.update(flowInfoEntity);
+				}
+			} else {
+
+				flowInfoEntity = new FlowInfoEntity();
+				flowInfoEntity.setFlowId(flowDto.flowId);
+				flowInfoEntity.setFlowName(flowDto.flowName);
+				flowInfoEntity.setFlowDesc("");
+				flowInfoEntity.setFlowJson(json);
+
+				flowInfoDao.save(flowInfoEntity);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * 
+	 * @param flowId
+	 * @param nodeId
+	 * @return
+	 */
+	public List<CustomHistoryNodeEntity> selectNodeHistoryListOpen(String flowId, String nodeId) {
+		return this.historyNodeDao.selectByFlowNodeIdOpen(flowId, nodeId);
+	}
+
+	/**
+	 * 
+	 * @param flowId
+	 * @param nodeId
+	 * @return
+	 */
+	public List<CustomHistoryNodeEntity> selectNodeHistoryListAll(String flowId, String nodeId) {
+		return this.historyNodeDao.selectByFlowNodeIdAll(flowId, nodeId);
+	}
+
+	/**
+	 * 
+	 * @param flowId
+	 * @param nodeId
+	 * @return
+	 */
+	public List<CustomHistoryNodeEntity> getNodeHistoryListAllByUser(String flowId, String nodeId, int userId) {
+		return this.historyNodeDao.getNodeHistoryListAllByUser(flowId, nodeId, userId);
 	}
 
 }

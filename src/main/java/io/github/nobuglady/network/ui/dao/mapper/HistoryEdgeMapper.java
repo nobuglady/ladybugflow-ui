@@ -33,6 +33,14 @@ public interface HistoryEdgeMapper {
 	//////////////////////////////////////
 	// Base
 	//////////////////////////////////////
+	// @formatter:off
+	@Select("SELECT * FROM history_edge " 
+			+ " WHERE" 
+			+ " flow_id = #{param1}" 
+			+ " and edge_id = #{param2}"
+			+ " and history_id = #{param3}")
+	// @formatter:on
+	public HistoryEdgeEntity selectByKey(String flowId, String edgeId, String historyId);
 
 	// @formatter:off
 	@Insert("insert into history_edge" 
@@ -42,6 +50,9 @@ public interface HistoryEdgeMapper {
 			+ "history_id," 
 			+ "from_node_id,"
 			+ "to_node_id," 
+			+ "edge_name," 
+			+ "ref_name," 
+			+ "display_flag," 
 			+ "edge_condition," 
 			+ "edge_exception_return_type," 
 			+ "skip_flag," 
@@ -60,6 +71,9 @@ public interface HistoryEdgeMapper {
 			+ "#{historyId}," 
 			+ "#{fromNodeId}," 
 			+ "#{toNodeId},"
+			+ "#{edgeName},"
+			+ "#{refName},"
+			+ "#{displayFlag},"
 			+ "#{edgeCondition},"
 			+ "#{edgeExceptionReturnType}," 
 			+ "#{skipFlag}," 

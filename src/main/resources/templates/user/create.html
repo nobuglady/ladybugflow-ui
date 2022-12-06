@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>home</title>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/home.css">
+<script src="/js/home.js"></script>
+<script type="text/javascript" src="/js/bootstrap/bootstrap-tab.js"></script>
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 387px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+		          <a class="nav-link" href="/admin/create_flow" target="_blank">Create Flow</a>
+		        </li>
+			</ul>
+
+			<ul class="navbar-nav">
+				<li class="nav-item"><a class="nav-link" href="#"><span
+						sec:authentication="name">Bob</span></a></li>
+				<li class="nav-item"><a class="nav-link" href="/logout">logout</a>
+				</li>
+			</ul>
+
+		</div>
+	</nav>
+	<div class="row">
+		<div class="col" style="padding-left:30px">Home -> Menu -> Create</div>
+		<div class="col text-right float-right" style="padding-right:30px"><a href="javascript:history.go(-1)">Back</a></div>
+	</div>
+	<table style="width:100%">
+		<tr>
+			<td valign="top">
+		
+				<div id="startFlowDiv">
+				
+					<label>user name:</label>
+					<input id="username" name="username" type="text" value=""/>
+					<button type="button" class="btn btn-success" onClick="startFlow()">start flow</button>
+					<div id="msg">
+					
+					</div>
+					
+				</div>	
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+//////////////////////////////////
+
+//////////////////////////////////
+		function startFlow(){
+			var flowId = getUrlParameter("flowId");
+			
+			$("#msg").text("running....");
+			post("/admin/flow/start", 
+					{
+						flowId:flowId,
+						username:$("#username").val()
+					}, 
+					function(data){
+				$("#msg").text("complete");
+			});
+		}
+	
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+		
+		function get(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'GET',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+		
+		function getUrlParameter(sParam) {
+		    var sPageURL = window.location.search.substring(1),
+		        sURLVariables = sPageURL.split('&'),
+		        sParameterName,
+		        i;
+
+		    for (i = 0; i < sURLVariables.length; i++) {
+		        sParameterName = sURLVariables[i].split('=');
+
+		        if (sParameterName[0] === sParam) {
+		            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+		        }
+		    }
+		    return false;
+		}
+
+	</script>
+</body>
+</html>

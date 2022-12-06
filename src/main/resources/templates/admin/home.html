@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script src="/js/admin/home.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+
+			<ul class="navbar-nav mr-auto">
+			<!-- 
+				<li class="nav-item">
+		          <a class="nav-link" href="/admin/create_flow" target="_blank">Create Flow</a>
+		        </li>
+		         -->
+		        <li class="nav-item">
+		          <a class="nav-link" href="/home">Flow</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/user">User</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/role">Role</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/category">Category</a>
+		        </li>
+			</ul>
+
+          <ul class="navbar-nav nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <span
+						sec:authentication="name">Bob</span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                      <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+
+
+	</nav>
+  	<table>
+  		<tr>
+  			<!-- Middle -->
+  			<td valign="top">
+  				<div align="right">
+  					<span id="menu"></span>
+  				</div>
+				<div>
+			
+					<div class="tab-content" id="myTabContent" style="width:800px">
+					
+					  <!-- user -->
+					  <div class="tab-pane fade show active" id="user" role="tabpanel" aria-labelledby="user-tab">
+					  
+					    <div style="border: 1px solid #ccc4c3; padding:5px; border-radius:0.5em">
+					    	<div class="row" style="margin-left:10px">
+					    		<div class="col-xs-2" style="margin-right:5px">
+									<a href="/admin/create_flow"><i  id="btn_flow_new" class="fa fa-file-o fa-lg"></i></a>
+								</div>
+							</div>
+						</div>
+					
+						<table class="table table-hover table-dark">
+						  <thead>
+						    <tr>
+						      <th scope="col">Flow</th>
+						    </tr>
+						  </thead>
+						  <tbody id="userListBody">
+							<tr th:each="entity:${flowList}">
+								<td><a th:href="@{/admin/flow_node_list(flowId=${entity.flowId})}"><span th:text="${entity.flowName}">aaa</span></a></td>
+							</tr>
+						  </tbody>
+						</table>
+
+					  </div>
+					  
+					</div>
+				</div>
+  			</td>
+  			
+  		</tr>
+  	</table>
+
+	<script type="text/javascript">
+		function refresh(){
+			window.location.reload();
+		}
+		
+		function clearComplete(){
+			post("/admin/flow/clearComplete", null, function(){
+				refresh();
+			});
+		}
+		
+		function clearError(){
+			post("/admin/flow/clearError", null, function(){
+				refresh();
+			});
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+
+	</script>
+</body>
+</html>

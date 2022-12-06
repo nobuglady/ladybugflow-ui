@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>home</title>
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+	integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/home.css">
+<script src="/js/home.js"></script>
+<script type="text/javascript" src="/js/bootstrap/bootstrap-tab.js"></script>
+<link rel="stylesheet"
+	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 387px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/home"> <img
+			src="/images/ladybug.png" width="30" height="30"
+			class="d-inline-block align-top" alt="">
+		</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+			<ul class="navbar-nav mr-auto">
+			<!-- 
+				<li class="nav-item">
+		          <a class="nav-link" href="/admin/create_flow" target="_blank">Create Flow</a>
+		        </li>
+		         -->
+		        <li class="nav-item">
+		          <a class="nav-link" href="/home">Flow</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/user">User</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/role">Role</a>
+		        </li>
+		        <li class="nav-item">
+		          <a class="nav-link" href="/admin/category">Category</a>
+		        </li>
+			</ul>
+
+          <ul class="navbar-nav nav pull-right">
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Welcome, <span
+						sec:authentication="name">Bob</span></a>
+                  <ul class="dropdown-menu">
+                      <li><a href="/user/preferences"><i class="icon-cog"></i> Preferences</a></li>
+                      <li><a href="/help/support"><i class="icon-envelope"></i> Contact Support</a></li>
+                      <li class="divider"></li>
+                      <li><a href="/logout"><i class="icon-off"></i> Logout</a></li>
+                  </ul>
+              </li>
+          </ul>
+
+
+		</div>
+	</nav>
+	<table style="width:100%">
+		<tr>
+			<td valign="top">
+				<div id="startFlowDiv">
+					<table>
+						<tr>
+							<td valign="top">
+								<div id="mynetwork"></div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<button type="button" class="btn btn-success" onClick="refresh()">Refresh</button>
+								<button type="button" class="btn btn-success" onClick="showJson()">show json</button>
+								<button type="button" class="btn btn-success" onClick="doEdit()">edit</button>
+								<button type="button" class="btn btn-danger" onClick="doDelete()">delete</button>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div id="jsonString"></div>
+							</td>
+						</tr>
+					</table>
+				</div>	
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/javascript">
+//////////////////////////////////
+		var nodes;
+		var edges;
+		var network;
+	
+		function refresh(){
+			loadJson();
+		}
+		
+		function loadJson(){
+			var flowId = getUrlParameter("flowId");
+			
+			get("/admin/flow/getJsonFlow?flowId="+flowId,null,function (data){
+				showNetwork(data);
+			});
+		}
+		
+		function showJson(){
+			var flowId = getUrlParameter("flowId");
+			
+			get("/admin/flow/getJsonString?flowId="+flowId,null,function (data){
+				$("#jsonString").text(data);
+			});
+		}
+
+		function showNetwork(jsonStr){
+			
+			var jsonObj = JSON.parse(jsonStr);
+		    // create an array with nodes
+		    nodes = new vis.DataSet(jsonObj.nodes);
+
+		    // create an array with edges
+		    edges = new vis.DataSet(jsonObj.edges);
+
+		    // create a network
+		    var container = document.getElementById('mynetwork');
+
+		    // provide the data in the vis format
+		    var data = {
+		        nodes: nodes,
+		        edges: edges
+		    };
+		    var options = {
+		    		layout: { randomSeed: 10 },
+		            interaction: { hover: true },
+		    };
+
+		    // initialize your network!
+		    if(network){
+		    	network.setData(data);
+		    }else{
+		    	network = new vis.Network(container, data, options);
+		    }
+		    
+		    
+		}
+		
+
+		loadJson();
+//////////////////////////////////
+		function startFlow(){
+			var flowId = getUrlParameter("flowId");
+			
+			$("#msg").text("running....");
+			post("/admin/flow/start", 
+					{
+						flowId:flowId,
+						username:$("#username").val()
+					}, 
+					function(data){
+				$("#msg").text("complete");
+			});
+		}
+	
+		var currentNodeId = "";
+		$(function () {
+			$(".tab-node").on("click",tabClick)
+		});
+		
+		function tabClick(event){
+			$("#startFlowDiv").hide();
+			var flowId = getUrlParameter("flowId");
+			var nodeId = $(event.target).attr("node-id");
+			currentNodeId = nodeId;
+			get("/admin/flow/node/instance/list",
+					{
+						flowId:flowId,
+						nodeId:nodeId
+					},
+					showNodeInstanceList);
+		}
+		
+		function goEdge(edgeId,historyId){
+			var flowId = getUrlParameter("flowId");
+			var nodeId = currentNodeId;
+			
+			post("/admin/flow/node/instance/go",
+					{
+						flowId:flowId,
+						nodeId:nodeId,
+						edgeId:edgeId,
+						historyId:historyId
+					},
+					function(){
+						setTimeout(() => {
+							get("/admin/flow/node/instance/list",
+									{
+										flowId:flowId,
+										nodeId:nodeId
+									},
+									showNodeInstanceList);
+						}, 500);
+
+					});
+			
+			
+
+		}
+		
+		function showNodeInstanceList(data){
+			$("#tbody-"+currentNodeId).html("");
+			var html = "";
+			html += "";
+			data.forEach(element => {
+				
+				html += "<tr>";
+				html += "	<td>"+element.historyId+"</td>";
+				html += "	<td>"+element.historyFlowEntity.startParam+"</td>";
+				html += "	<td>"+element.startTimeVo+"</td>";
+				html += "	<td>";
+				if(element.nodeStatus == 10){
+					element.historyEdgeEntityList.forEach(edge=>{
+						if(edge.displayFlag == 1){
+							html += "<button type='button' class='btn btn-success' onClick='goEdge(\""+edge.edgeId+"\",\""+edge.historyId+"\")'>"+edge.edgeName+"</button>";
+						}
+					});
+				}
+				html += "	</td>";
+				html += "</tr>";
+				
+			});
+			html += "";
+			$("#tbody-"+currentNodeId).html(html);
+			
+		}
+		
+		function refresh(){
+			window.location.reload();
+		}
+		
+		function clearComplete(){
+			post("/admin/flow/clearComplete", null, function(){
+				refresh();
+			});
+		}
+		
+		function clearError(){
+			post("/admin/flow/clearError", null, function(){
+				refresh();
+			});
+		}
+		
+		function post(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'POST',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+		
+		function get(requestUrl, requestData, callBack){
+		    $.ajax({
+		        url:requestUrl,
+		        type:'GET',
+		        data:requestData
+		    }).done( (data, status, xhr) => {
+		        console.log(data);
+				
+		        callBack(data);
+
+		    }).fail( (data) => {
+		        console.log(data);
+		    }).always( (data) => {
+
+		    });
+		}
+		
+		function getUrlParameter(sParam) {
+		    var sPageURL = window.location.search.substring(1),
+		        sURLVariables = sPageURL.split('&'),
+		        sParameterName,
+		        i;
+
+		    for (i = 0; i < sURLVariables.length; i++) {
+		        sParameterName = sURLVariables[i].split('=');
+
+		        if (sParameterName[0] === sParam) {
+		            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+		        }
+		    }
+		    return false;
+		}
+
+	</script>
+</body>
+</html>

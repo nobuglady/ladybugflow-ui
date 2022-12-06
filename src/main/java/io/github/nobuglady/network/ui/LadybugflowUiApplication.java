@@ -14,6 +14,8 @@ package io.github.nobuglady.network.ui;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * 
@@ -24,6 +26,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LadybugflowUiApplication {
 
 	public static void main(String[] args) {
+//		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//		System.out.println(encoder.encode("admin"));
 		SpringApplication.run(LadybugflowUiApplication.class, args);
 	}
 

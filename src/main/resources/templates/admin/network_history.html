@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ladybugflow</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  
+    <style type="text/css">
+        #mynetwork {
+            width: 600px;
+            height: 387px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+
+<table>
+	<tr>
+		<td><button onClick="refresh()">Refresh</button></td>
+	</tr>
+	<tr>
+		<td valign="top">
+			<div id="mynetwork"></div>
+		</td>
+	</tr>
+</table>
+
+<script type="text/javascript">
+	var nodes;
+	var edges;
+	var network;
+
+	function refresh(){
+		loadJson();
+	}
+	
+	function loadJson(){
+		var flowId = getUrlParameter("flowId");
+		var historyId = getUrlParameter("historyId");
+		
+		get("/admin/flow/getJsonHistory?flowId="+flowId+"&historyId="+historyId,null,function (data){
+			showNetwork(data);
+		});
+	}
+	
+	function showNetwork(jsonStr){
+		
+		var jsonObj = JSON.parse(jsonStr);
+	    // create an array with nodes
+	    nodes = new vis.DataSet(jsonObj.nodes);
+
+	    // create an array with edges
+	    edges = new vis.DataSet(jsonObj.edges);
+
+	    // create a network
+	    var container = document.getElementById('mynetwork');
+
+	    // provide the data in the vis format
+	    var data = {
+	        nodes: nodes,
+	        edges: edges
+	    };
+	    var options = {
+	    		layout: { randomSeed: 10 },
+	            interaction: { hover: true },
+	    };
+
+	    // initialize your network!
+	    if(network){
+	    	network.setData(data);
+	    }else{
+	    	network = new vis.Network(container, data, options);
+	    }
+	    
+	    
+	}
+	
+
+	function get(requestUrl, requestData, callBack){
+	    $.ajax({
+	        url:requestUrl,
+	        type:'GET',
+	        data:requestData
+	    }).done( (data, status, xhr) => {
+	        console.log(data);
+			
+	        callBack(data);
+
+	    }).fail( (data) => {
+	        console.log(data);
+	    }).always( (data) => {
+
+	    });
+	}
+
+	function getUrlParameter(sParam) {
+	    var sPageURL = window.location.search.substring(1),
+	        sURLVariables = sPageURL.split('&'),
+	        sParameterName,
+	        i;
+
+	    for (i = 0; i < sURLVariables.length; i++) {
+	        sParameterName = sURLVariables[i].split('=');
+
+	        if (sParameterName[0] === sParam) {
+	            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+	        }
+	    }
+	    return false;
+	}
+	
+	loadJson();
+</script>
+</body>
+</html>

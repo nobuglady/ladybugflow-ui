@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import io.github.nobuglady.network.fw.persistance.entity.HistoryEdgeEntity;
 import io.github.nobuglady.network.ui.dao.mapper.HistoryEdgeMapper;
+import io.github.nobuglady.network.ui.util.AuthUtil;
 
 /**
  * NodeHistory table operation class
@@ -37,13 +38,27 @@ public class HistoryEdgeDao {
 	//////////////////////////////////////
 
 	/**
+	 * selectByKey
+	 * 
+	 * @param flowId    flowId
+	 * @param edgeId    edgeId
+	 * @param historyId historyId
+	 * @return HistoryEdgeEntity
+	 */
+	public HistoryEdgeEntity selectByKey(String flowId, String edgeId, String historyId) {
+
+		return edgeHistoryMapper.selectByKey(flowId, edgeId, historyId);
+	}
+
+	/**
 	 * save
 	 * 
 	 * @param entity entity
 	 */
 	public void save(HistoryEdgeEntity entity) {
-		entity.setCreateUser("testUser");
-		entity.setUpdateUser("testUser");
+		entity.setRefName(entity.getEdgeName());
+		entity.setCreateUser(String.valueOf(AuthUtil.getLoginUserId()));
+		entity.setUpdateUser(String.valueOf(AuthUtil.getLoginUserId()));
 		edgeHistoryMapper.save(entity);
 	}
 
@@ -71,7 +86,7 @@ public class HistoryEdgeDao {
 	 * @param edgeStatus edgeStatus
 	 */
 	public void updateStatusByKey(String flowId, String historyId, String edgeId, int edgeStatus) {
-		edgeHistoryMapper.updateStatusByKey(flowId, historyId, edgeId, edgeStatus, "testUser");
+		edgeHistoryMapper.updateStatusByKey(flowId, historyId, edgeId, edgeStatus, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**

@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.github.nobuglady.network.fw.persistance.entity.HistoryFlowEntity;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryFlowEntity;
 import io.github.nobuglady.network.ui.dao.mapper.HistoryFlowMapper;
+import io.github.nobuglady.network.ui.util.AuthUtil;
 
 /**
  * FlowHistory table operation class
@@ -53,8 +55,8 @@ public class HistoryFlowDao {
 	 * @param entity entity
 	 */
 	public void save(HistoryFlowEntity entity) {
-		entity.setCreateUser("testUser");
-		entity.setUpdateUser("testUser");
+		entity.setCreateUser(String.valueOf(AuthUtil.getLoginUserId()));
+		entity.setUpdateUser(String.valueOf(AuthUtil.getLoginUserId()));
 		historyFlowMapper.save(entity);
 	}
 
@@ -67,8 +69,17 @@ public class HistoryFlowDao {
 	 * 
 	 * @return HistoryFlowEntity
 	 */
-	public List<HistoryFlowEntity> selectAll() {
+	public List<CustomHistoryFlowEntity> selectAll() {
 		return historyFlowMapper.selectAll();
+	}
+
+	/**
+	 * selectAll
+	 * 
+	 * @return HistoryFlowEntity
+	 */
+	public List<CustomHistoryFlowEntity> selectHistoryByIdUser(String flowId, int userId) {
+		return historyFlowMapper.selectHistoryByIdUser(flowId, String.valueOf(userId));
 	}
 
 	/**
@@ -96,7 +107,7 @@ public class HistoryFlowDao {
 	 */
 	public void updateStatusAndFinishTime(String flowId, String historyId, int status) {
 
-		historyFlowMapper.updateStatusAndFinishTime(flowId, historyId, status, "testUser");
+		historyFlowMapper.updateStatusAndFinishTime(flowId, historyId, status, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**
@@ -108,7 +119,7 @@ public class HistoryFlowDao {
 	 */
 	public void updateStatusAndStartTime(String flowId, String historyId, int status) {
 
-		historyFlowMapper.updateStatusAndStartTime(flowId, historyId, status, "testUser");
+		historyFlowMapper.updateStatusAndStartTime(flowId, historyId, status, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**

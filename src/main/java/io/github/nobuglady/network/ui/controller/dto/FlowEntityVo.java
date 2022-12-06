@@ -20,6 +20,7 @@ package io.github.nobuglady.network.ui.controller.dto;
 public class FlowEntityVo {
 
 	private String flowId;
+	private String flowName;
 	private int historyCount;
 	private int completeCount;
 	private int processingCount;
@@ -31,6 +32,14 @@ public class FlowEntityVo {
 
 	public void setFlowId(String flowId) {
 		this.flowId = flowId;
+	}
+
+	public String getFlowName() {
+		return flowName;
+	}
+
+	public void setFlowName(String flowName) {
+		this.flowName = flowName;
 	}
 
 	public int getHistoryCount() {

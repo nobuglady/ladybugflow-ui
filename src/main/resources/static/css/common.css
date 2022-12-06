@@ -1,0 +1,11 @@
+.bd-callout-info {
+    border-left-color: #17a2b8!important;
+}
+.bd-callout {
+    padding: 0.6rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.2rem;
+    border: 1px solid #17a2b8;
+    border-left-width: 0.25rem;
+    border-radius: 0.25rem;
+}

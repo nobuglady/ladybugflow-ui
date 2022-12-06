@@ -18,9 +18,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import io.github.nobuglady.network.ui.dao.FlowInfoDao;
 import io.github.nobuglady.network.ui.dao.HistoryEdgeDao;
 import io.github.nobuglady.network.ui.dao.HistoryFlowDao;
 import io.github.nobuglady.network.ui.dao.HistoryNodeDao;
+import io.github.nobuglady.network.ui.dao.HistoryNodeStatusDao;
 
 /**
  * 
@@ -38,6 +40,10 @@ public class SpringContextBridge implements ApplicationContextAware {
 	private HistoryNodeDao historyNodeDao;
 	@Autowired
 	private HistoryEdgeDao historyEdgeDao;
+	@Autowired
+	private HistoryNodeStatusDao historyNodeStatusDao;
+	@Autowired
+	private FlowInfoDao flowInfoDao;
 
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		SpringContextBridge.applicationContext = applicationContext;
@@ -55,8 +61,16 @@ public class SpringContextBridge implements ApplicationContextAware {
 		return historyNodeDao;
 	}
 
+	public HistoryNodeStatusDao getHistoryNodeStatusDao() {
+		return historyNodeStatusDao;
+	}
+
 	public HistoryEdgeDao getHistoryEdgeDao() {
 		return historyEdgeDao;
+	}
+
+	public FlowInfoDao getFlowInfoDao() {
+		return flowInfoDao;
 	}
 
 }

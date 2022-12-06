@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.github.nobuglady.network.fw.persistance.entity.HistoryNodeEntity;
+import io.github.nobuglady.network.ui.dao.entity.CustomHistoryNodeEntity;
 import io.github.nobuglady.network.ui.dao.mapper.HistoryNodeMapper;
+import io.github.nobuglady.network.ui.util.AuthUtil;
 
 /**
  * NodeHistory table operation class
@@ -55,8 +57,8 @@ public class HistoryNodeDao {
 	 */
 	public void save(HistoryNodeEntity entity) {
 		entity.setRefName(entity.getNodeName());
-		entity.setCreateUser("testUser");
-		entity.setUpdateUser("testUser");
+		entity.setCreateUser(String.valueOf(AuthUtil.getLoginUserId()));
+		entity.setUpdateUser(String.valueOf(AuthUtil.getLoginUserId()));
 		nodeHistoryMapper.save(entity);
 	}
 
@@ -124,7 +126,7 @@ public class HistoryNodeDao {
 	 */
 	public void updateStatusByNodeId(String flowId, String historyId, String nodeId, int status) {
 
-		nodeHistoryMapper.updateStatusByNodeId(status, flowId, historyId, nodeId, "testUser");
+		nodeHistoryMapper.updateStatusByNodeId(status, flowId, historyId, nodeId, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class HistoryNodeDao {
 	public void updateStatusDetailByNodeId(String flowId, String instanceId, String nodeId, int status,
 			int detailStatus) {
 
-		nodeHistoryMapper.updateStatusDetailByNodeId(status, detailStatus, flowId, instanceId, nodeId, "testUser");
+		nodeHistoryMapper.updateStatusDetailByNodeId(status, detailStatus, flowId, instanceId, nodeId, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**
@@ -162,7 +164,7 @@ public class HistoryNodeDao {
 	 * @param returnValue returnValue
 	 */
 	public void updateReturnValueByNodeId(String flowId, String historyId, String nodeId, String returnValue) {
-		nodeHistoryMapper.updateReturnValueByNodeId(flowId, historyId, nodeId, returnValue, "testUser");
+		nodeHistoryMapper.updateReturnValueByNodeId(flowId, historyId, nodeId, returnValue, String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 	/**
@@ -172,6 +174,50 @@ public class HistoryNodeDao {
 	 */
 	public void deleteByFlowStatus(int flowStatus) {
 		nodeHistoryMapper.deleteByFlowStatus(flowStatus);
+	}
+
+	/**
+	 * selectByFlowNodeId
+	 * 
+	 * @param flowId flowId
+	 * @param nodeId nodeId
+	 * @return HistoryNodeEntity
+	 */
+	public List<CustomHistoryNodeEntity> selectByFlowNodeIdOpen(String flowId, String nodeId) {
+		return nodeHistoryMapper.selectByFlowNodeIdOpen(flowId, nodeId);
+	}
+
+	/**
+	 * selectByFlowNodeId
+	 * 
+	 * @param flowId flowId
+	 * @param nodeId nodeId
+	 * @return HistoryNodeEntity
+	 */
+	public List<CustomHistoryNodeEntity> selectByFlowNodeIdAll(String flowId, String nodeId) {
+		return nodeHistoryMapper.selectByFlowNodeIdAll(flowId, nodeId);
+	}
+
+	/**
+	 * selectByFlowNodeId
+	 * 
+	 * @param flowId flowId
+	 * @param nodeId nodeId
+	 * @return HistoryNodeEntity
+	 */
+	public List<CustomHistoryNodeEntity> getNodeHistoryListAllByUser(String flowId, String nodeId, int userId) {
+		return nodeHistoryMapper.selectByFlowNodeIdAllByUser(flowId, nodeId, String.valueOf(userId));
+	}
+
+	/**
+	 * updateNodeStartTime
+	 * 
+	 * @param flowId
+	 * @param nodeId
+	 * @param historyId
+	 */
+	public void updateNodeStartTime(String flowId, String nodeId, String historyId) {
+		nodeHistoryMapper.updateNodeStartTime(flowId, historyId, nodeId,  String.valueOf(AuthUtil.getLoginUserId()));
 	}
 
 }
