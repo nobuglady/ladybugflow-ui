@@ -16,14 +16,12 @@
 	src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
 	integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
 	crossorigin="anonymous"></script>
-<link rel="stylesheet" href="/css/home.css">
-<script src="/js/home.js"></script>
 <script type="text/javascript" src="/js/bootstrap/bootstrap-tab.js"></script>
 <link rel="stylesheet"
 	href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 	<style type="text/css">
         #mynetwork {
-            width: 600px;
+            width: 800px;
             height: 387px;
             border: 1px solid lightgray;
         }
@@ -80,7 +78,7 @@
 	</nav>
 	<table style="width:100%">
 		<tr>
-			<td valign="top">
+			<td valign="top" style="width:800px">
 				<div id="startFlowDiv">
 					<table>
 						<tr>
@@ -105,6 +103,17 @@
 						</tr>
 					</table>
 				</div>	
+			</td>
+			<td valign="top">
+				<div id="nodeDetail" style="margin-left:10px;display:none">
+					<table>
+						<thead>
+							<th>Instance List</th>
+							<th></th>
+						</thead>
+						<tbody id="tbodyInstance"></tbody>
+					</table>
+				</div>
 			</td>
 		</tr>
 	</table>
@@ -164,7 +173,28 @@
 		    	network = new vis.Network(container, data, options);
 		    }
 		    
-		    
+
+		    network.on("click", function (params) {
+				var nodeName = this.getNodeAt(params.pointer.DOM);
+				if(nodeName){
+					
+					var node = nodes.get(params.nodes[0]);
+					
+					var flowId = getUrlParameter("flowId");
+					var nodeId = node.id;
+					currentNodeId = node.id;
+					get("/admin/flow/node/instance/list",
+							{
+								flowId:flowId,
+								nodeId:nodeId
+							},
+							showNodeInstanceList);
+					
+					document.getElementById("nodeDetail").style.display = "";
+				}else{
+					document.getElementById("nodeDetail").style.display = "none";
+				}
+		    });
 		}
 		
 
@@ -230,29 +260,31 @@
 		}
 		
 		function showNodeInstanceList(data){
-			$("#tbody-"+currentNodeId).html("");
+			$("#tbodyInstance").html("");
 			var html = "";
 			html += "";
 			data.forEach(element => {
 				
 				html += "<tr>";
-				html += "	<td>"+element.historyId+"</td>";
+				//html += "	<td>"+element.historyId+"</td>";
 				html += "	<td>"+element.historyFlowEntity.startParam+"</td>";
 				html += "	<td>"+element.startTimeVo+"</td>";
 				html += "	<td>";
-				if(element.nodeStatus == 10){
-					element.historyEdgeEntityList.forEach(edge=>{
-						if(edge.displayFlag == 1){
-							html += "<button type='button' class='btn btn-success' onClick='goEdge(\""+edge.edgeId+"\",\""+edge.historyId+"\")'>"+edge.edgeName+"</button>";
-						}
-					});
-				}
+				
+				//if(element.nodeStatus == 10){
+				//	element.historyEdgeEntityList.forEach(edge=>{
+				//		if(edge.displayFlag == 1){
+				//			html += "<button type='button' class='btn btn-success' onClick='goEdge(\""+edge.edgeId+"\",\""+edge.historyId+"\")'>"+edge.edgeName+"</button>";
+				//		}
+				//	});
+				//}
+				
 				html += "	</td>";
 				html += "</tr>";
 				
 			});
 			html += "";
-			$("#tbody-"+currentNodeId).html(html);
+			$("#tbodyInstance").html(html);
 			
 		}
 		
