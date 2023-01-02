@@ -80,12 +80,14 @@
 						<table class="table table-hover table-dark">
 						  <thead>
 						    <tr>
-						      <th scope="col">Flow</th>
+						      <th scope="col" style="width:90%">Flow</th>
+						      <th scope="col" style="width:10%"></th>
 						    </tr>
 						  </thead>
 						  <tbody id="userListBody">
 							<tr th:each="entity:${flowList}">
-								<td><a th:href="@{/admin/flow_node_list(flowId=${entity.flowId})}"><span th:text="${entity.flowName}">aaa</span></a></td>
+								<td><span th:text="${entity.flowName}">aaa</span></td>
+								<td><a th:href="@{/admin/flow_node_list(flowId=${entity.flowId})}"><span>Detail</span></a></td>
 							</tr>
 						  </tbody>
 						</table>
